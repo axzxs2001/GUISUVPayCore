@@ -9,6 +9,7 @@ namespace WeiXin_TestConsole
     {
         public static void Main(string[] args)
         {
+
         }
     }
 }
