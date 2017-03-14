@@ -49,5 +49,7 @@ namespace WeiXinPayCore.Entity
         /// </summary>
         [TradeField("code_url",Length =64,IsRequire =false)]
         public string CodeURL { get; set; }
+
+
     }
 }
