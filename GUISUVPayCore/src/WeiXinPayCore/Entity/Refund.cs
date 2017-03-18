@@ -7,5 +7,6 @@ namespace WeiXinPayCore.Entity
     [Trade("https://api.mch.weixin.qq.com/secapi/pay/refund",RequireCertificate =true)]
     class Refund
     {
+
     }
 }
