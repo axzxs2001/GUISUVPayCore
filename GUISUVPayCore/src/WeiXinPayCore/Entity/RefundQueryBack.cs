@@ -5,9 +5,9 @@ using System.Text;
 namespace WeiXinPayCore.Entity
 {
     /// <summary>
-    /// 申请退款返回实体
+    /// 查询退款返回实体
     /// </summary>
-    class RefundBack:WeiXinPayBackParameters
+    class RefundQueryBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
@@ -37,7 +37,7 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 微信订单号
         /// </summary>
-        [TradeField("transaction_id", Length = 28, IsRequire = true)]
+        [TradeField("transaction_id", Length = 32, IsRequire = true)]
         public string TransactionID { get; set; }
         /// <summary>
         /// 商户订单号
@@ -45,32 +45,7 @@ namespace WeiXinPayCore.Entity
         [TradeField("out_trade_no", Length = 32, IsRequire = true)]
         public string OutTradeNo { get; set; }
         /// <summary>
-        /// 商户退款单号
-        /// </summary>
-        [TradeField("out_refund_no", Length = 32, IsRequire = true)]
-        public string OutRefundNo { get; set; }
-        /// <summary>
-        /// 微信退款单号
-        /// </summary>
-        [TradeField("refund_id",Length =28,IsRequire =true)]
-        public string RefundID { get; set; }
-        /// <summary>
-        /// 退款渠道
-        /// </summary>
-        [TradeField("refund_channel",Length =16,IsRequire =false)]
-        public string RefundChannel { get; set; }
-        /// <summary>
-        /// 退款金额
-        /// </summary>
-        [TradeField("refund_fee", IsRequire = true)]
-        public int RefundFee { get; set; }
-        /// <summary>
-        /// 应结退款金额
-        /// </summary>
-        [TradeField("settlement_refund_fee",IsRequire =false)]
-        public string SettlementRefund { get; set; }
-        /// <summary>
-        /// 标价金额（单位：分）
+        /// 订单金额
         /// </summary>
         [TradeField("total_fee", IsRequire = true)]
         public int TotalFee { get; set; }
@@ -80,49 +55,89 @@ namespace WeiXinPayCore.Entity
         [TradeField("settlement_total_fee", IsRequire = false)]
         public string SettlementTotal_Fee { get; set; }
         /// <summary>
-        /// 标价币种
+        /// 货币种类
         /// </summary>
-        [TradeField("fee_type", Length = 8, IsRequire = false)]
-        public string FeeType { get; set; }
+        [TradeField("refund_fee_type", Length = 8, IsRequire = false)]
+        public string RefundFeeType { get; set; }
         /// <summary>
         /// 现金支付金额
         /// </summary>
         [TradeField("cash_fee", IsRequire = true)]
         public int CashFee { get; set; }
         /// <summary>
-        /// 现金支付币种
+        /// 退款笔数
         /// </summary>
-        [TradeField("cash_fee_type", Length = 16, IsRequire = false)]
-        public string CashFeeType { get; set; }
+        [TradeField("refund_count",IsRequire =true)]
+        public int RefundCount { get; set; }
         /// <summary>
-        /// 现金退款金额
+        /// 商户退款单号
         /// </summary>
-        [TradeField("cash_refund_fee",IsRequire =false)]
-        public int CashRefundFee { get; set; }
+        [TradeField("out_refund_no_$n",Length =32,IsRequire =true)]
+        public string OutRefundNoSn { get; set; }
+        /// <summary>
+        /// 微信退款单号
+        /// </summary>
+        [TradeField("refund_id_$n",Length =28,IsRequire =true)]
+        public string RefundIDSn { get; set; }
+        /// <summary>
+        /// 退款渠道
+        /// </summary>
+        [TradeField("refund_channel_$n",Length =16,IsRequire =false)]
+        public string RefundChannelSn { get; set; }
+        /// <summary>
+        /// 申请退款金额
+        /// </summary>
+        [TradeField("refund_fee_$n",IsRequire =true)]
+        public int RefundFeeSn { get; set; }
+        /// <summary>
+        /// 退款金额
+        /// </summary>
+        [TradeField("settlement_refund_fee_$n",IsRequire =false)]
+        public int SettlementRefundFeeSn { get; set; }
         /// <summary>
         /// 代金卷类型
         /// </summary>
         [TradeField("coupon_type_$n", Length = 8, IsRequire = false)]
         public string CouponTypeSn { get; set; }
         /// <summary>
-        /// 代金卷退款总金额
+        /// 总代金卷退款金额
         /// </summary>
-        [TradeField("coupon_refund_fee",IsRequire =false)]
-        public int CouponRefundFee { get; set; }
-        /// <summary>
-        /// 单个代金卷退款金额
-        /// </summary>
-        [TradeField("coupon_refund_fee_$n",IsRequire =false)]
+        [TradeField("coupon_refund_fee_$n", IsRequire = false)]
         public int CouponRefundFeeSn { get; set; }
         /// <summary>
         /// 退款代金券使用数量
         /// </summary>
-        [TradeField("coupon_refund_count",IsRequire =false)]
-        public int CouponRefundCount { get; set; }
+        [TradeField("coupon_refund_count_$n", IsRequire = false)]
+        public int CouponRefundCountSn { get; set; }
         /// <summary>
         /// 退款代金卷ID
         /// </summary>
         [TradeField("coupon_refund_id_$n", Length = 20, IsRequire = false)]
         public string CouponIDSn { get; set; }
+        /// <summary>
+        /// 单个代金卷退款金额
+        /// </summary>
+        [TradeField("coupon_refund_fee_$n_$m", IsRequire = false)]
+        public int CouponRefundFeeSnSm { get; set; }
+        /// <summary>
+        /// 退款状态
+        /// </summary>
+        [TradeField("refund_status_$n",Length =16,IsRequire =true)]
+        public string RefundStatusSn { get; set; }
+        /// <summary>
+        /// 退款资金来源
+        /// </summary>
+        [TradeField("refund_account_$n",Length =30,IsRequire =false)]
+        public string RefundAccountSn { get; set; }
+        /// <summary>
+        /// 退款入账账户
+        /// </summary>
+        [TradeField("refund_recv_accout_$n",Length =64,IsRequire =true)]
+        public string RefundRecvAccoutSn { get; set; }
+        /// <summary>
+        /// 退款成功时间
+        /// </summary>
+        [TradeField("refund_account_$n",Length =20,IsRequire =false)]
+        public string RefundAccoutSn { get; set; }
     }
 }
