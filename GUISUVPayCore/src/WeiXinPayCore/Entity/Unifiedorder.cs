@@ -8,7 +8,7 @@ namespace WeiXinPayCore.Entity
     /// 统一下单实体类
     /// </summary>
     [Trade("https://api.mch.weixin.qq.com/pay/unifiedorder", RequireCertificate = false)]
-    public class Unifiedorder : WeiXinPayParameters
+    public class UnifiedOrder : WeiXinPayParameters
     {
         /// <summary>
         /// 商品描述

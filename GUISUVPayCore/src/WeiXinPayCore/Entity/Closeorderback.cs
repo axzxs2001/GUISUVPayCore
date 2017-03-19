@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 关闭订单返回实体
     /// </summary>
-    class Closeorderback
+    class CloseOrderBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码

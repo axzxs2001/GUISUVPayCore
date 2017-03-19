@@ -5,9 +5,9 @@ using System.Text;
 namespace WeiXinPayCore.Entity
 {
     /// <summary>
-    /// 查询订单交易返回实体
+    /// 申请退款返回实体
     /// </summary>
-    class OrderQueryBack:WeiXinPayBackParameters
+    class RefundBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
@@ -35,30 +35,40 @@ namespace WeiXinPayCore.Entity
         [TradeField("err_code_des", Length = 128, IsRequire = false)]
         public string ErrCodeDes { get; set; }
         /// <summary>
-        /// 用户标识
+        /// 微信订单号
         /// </summary>
-        [TradeField("open_id", Length = 128, IsRequire = true)]
-        public string OpenID { get; set; }
+        [TradeField("transaction_id", Length = 28, IsRequire = true)]
+        public string TransactionID { get; set; }
         /// <summary>
-        /// 是否关注公众号
+        /// 商户订单号
         /// </summary>
-        [TradeField("is_subscribe", Length = 1, IsRequire = false)]
-        public string IsSubscribe { get; set; }
+        [TradeField("out_trade_no", Length = 32, IsRequire = true)]
+        public string OutTradeNo { get; set; }
         /// <summary>
-        /// 交易类型
+        /// 商户退款单号
         /// </summary>
-        [TradeField("trade_type", Length = 16, IsRequire = true)]
-        public string TradeType { get; set; }
+        [TradeField("out_refund_no", Length = 32, IsRequire = true)]
+        public string OutRefundNo { get; set; }
         /// <summary>
-        /// 交易状态
+        /// 微信退款单号
         /// </summary>
-        [TradeField("trade_state", Length = 32, IsRequire = true)]
-        public string TradeState { get; set; }
+        [TradeField("refund_id",Length =28,IsRequire =true)]
+        public string RefundID { get; set; }
         /// <summary>
-        /// 付款银行
+        /// 退款渠道
         /// </summary>
-        [TradeField("bank_type", Length = 16, IsRequire = true)]
-        public string BankType { get; set; }
+        [TradeField("refund_channel",Length =16,IsRequire =false)]
+        public string RefundChannel { get; set; }
+        /// <summary>
+        /// 退款金额
+        /// </summary>
+        [TradeField("refund_fee", IsRequire = true)]
+        public int RefundFee { get; set; }
+        /// <summary>
+        /// 应结退款金额
+        /// </summary>
+        [TradeField("settlement_refund_fee",IsRequire =false)]
+        public string SettlementRefund { get; set; }
         /// <summary>
         /// 标价金额（单位：分）
         /// </summary>
@@ -85,51 +95,34 @@ namespace WeiXinPayCore.Entity
         [TradeField("cash_fee_type", Length = 16, IsRequire = false)]
         public string CashFeeType { get; set; }
         /// <summary>
-        /// 代金卷使用数量
+        /// 现金退款金额
         /// </summary>
-        [TradeField("coupon_count", IsRequire = false)]
-        public int CouponCount { get; set; }
+        [TradeField("cash_refund_fee",IsRequire =false)]
+        public int CashRefundFee { get; set; }
         /// <summary>
         /// 代金卷类型
         /// </summary>
-        [TradeField("coupon_type_$n",Length =8, IsRequire = false)]
+        [TradeField("coupon_type_$n", Length = 8, IsRequire = false)]
         public string CouponTypeSn { get; set; }
+        /// <summary>
+        /// 代金卷退款总金额
+        /// </summary>
+        [TradeField("coupon_refund_fee",IsRequire =false)]
+        public string CouponRefundFee { get; set; }
+        /// <summary>
+        /// 单个代金卷退款金额
+        /// </summary>
+        [TradeField("coupon_refund_fee_$n",IsRequire =false)]
+        public int CouponRefundFeeSn { get; set; }
+        /// <summary>
+        /// 退款代金券使用数量
+        /// </summary>
+        [TradeField("coupon_refund_count",IsRequire =false)]
+        public int CouponRefundCount { get; set; }
         /// <summary>
         /// 代金卷ID
         /// </summary>
         [TradeField("coupon_id_$n", Length = 20, IsRequire = false)]
         public string CouponIDSn { get; set; }
-        /// <summary>
-        /// 单个代金卷支付金额
-        /// </summary>
-        [TradeField("coupon_fee_$n", IsRequire = false)]
-        public int CouponFeeSn { get; set; }
-        /// <summary>
-        /// 微信支付订单号
-        /// </summary>
-        [TradeField("transaction_id", Length = 32, IsRequire = true)]
-        public string TransactionID { get; set; }
-        /// <summary>
-        /// 商户订单号
-        /// </summary>
-        [TradeField("out_trade_no", Length = 32, IsRequire = true)]
-        public string OutTradeNo { get; set; }
-        /// <summary>
-        /// 附加数据
-        /// </summary>
-        [TradeField("attach", Length = 128, IsRequire = false)]
-        public string Attach { get; set; }
-        /// <summary>
-        /// 支付完成时间
-        /// </summary>
-        [TradeField("time_end", Length = 14, IsRequire = true)]
-        public string TimeEnd {get;set; }
-        /// <summary>
-        /// 交易状态描述
-        /// </summary>
-        [TradeField("trade_state_desc",Length =256,IsRequire =true)]
-        public string TradeStateDesc { get; set; }
-
-
     }
 }

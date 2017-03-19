@@ -8,7 +8,7 @@ namespace WeiXinPayCore.Entity
     /// 关闭订单实体
     /// </summary>
     [Trade("https://api.mch.weixin.qq.com/pay/closeorder ",RequireCertificate =false)]
-    class Closeorder
+    class CloseOrder:WeiXinPayParameters
     {
         /// <summary>
         /// 商户订单号

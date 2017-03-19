@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 统一下单返回实体类
     /// </summary>
-    public class UnifiedorderBack: WeiXinPayBackParameters
+    public class UnifiedOrderBack: WeiXinPayBackParameters
     {
         /// <summary>
         ///返回状态码
