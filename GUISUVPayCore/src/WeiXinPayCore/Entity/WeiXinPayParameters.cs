@@ -99,7 +99,7 @@ namespace WeiXinPayCore.Entity
                         //验证超长
                         void ValidateLength()
                         {
-                            if (attr.Length < Encoding.UTF8.GetByteCount(fieldValue.ToString()))
+                            if (attr.Length!=0&& attr.Length < Encoding.UTF8.GetByteCount(fieldValue.ToString()))
                             {
                                 throw new WeiXinPayCoreException($"{fieldName}的值：{fieldValue}长度超过{attr.Length}");
                             }
@@ -125,7 +125,9 @@ namespace WeiXinPayCore.Entity
             {
                 //MD5加密
                 var md5 = MD5.Create();
-                var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(fieldStr.ToString().Trim('&')));
+
+                var urlStr = fieldStr.ToString().Trim('&');
+                var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(urlStr));
                 var charBuilder = new StringBuilder();
                 foreach (byte b in bs)
                 {
@@ -195,6 +197,7 @@ namespace WeiXinPayCore.Entity
                     }
                 }
             }
+            xmlBuilder.Append("</xml>");
             return xmlBuilder.ToString();
         }
 
