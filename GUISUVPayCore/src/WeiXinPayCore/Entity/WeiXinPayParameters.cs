@@ -34,14 +34,30 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 随机字符串
         /// </summary>
+        string _nonceStr;
+        /// <summary>
+        /// 随机字符串
+        /// </summary>
         [TradeField("nonce_str", Length = 32, IsRequire = true)]
         public string NonceStr
         {
             get
             {
-                return Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+                if (string.IsNullOrEmpty(_nonceStr))
+                {
+                    _nonceStr = Guid.NewGuid().ToString().Replace("-", "");
+                    return _nonceStr;
+                }
+                else
+                {
+                    return _nonceStr;
+                }
             }
         }
+        /// <summary>
+        /// 签名
+        /// </summary>
+        string _sign;
         /// <summary>
         /// 签名
         /// </summary>
@@ -51,6 +67,10 @@ namespace WeiXinPayCore.Entity
             get
             {
                 return CreateSign();
+            }
+            set
+            {
+                _sign = value;
             }
         }
         /// <summary>
@@ -68,7 +88,7 @@ namespace WeiXinPayCore.Entity
                     {
                         var attr = (att as TradeFieldAttribute);
                         //不作为生成sign验证码
-                        if(attr.Name=="sign")
+                        if (attr.Name == "sign")
                         {
                             continue;
                         }
@@ -99,7 +119,7 @@ namespace WeiXinPayCore.Entity
                         //验证超长
                         void ValidateLength()
                         {
-                            if (attr.Length!=0&& attr.Length < Encoding.UTF8.GetByteCount(fieldValue.ToString()))
+                            if (attr.Length != 0 && attr.Length < Encoding.UTF8.GetByteCount(fieldValue.ToString()))
                             {
                                 throw new WeiXinPayCoreException($"{fieldName}的值：{fieldValue}长度超过{attr.Length}");
                             }
@@ -172,13 +192,13 @@ namespace WeiXinPayCore.Entity
                         void ValidateValue()
                         {
                             //判断引用类型，必填值为空的，抛异常
-                            if(!pro.PropertyType.GetTypeInfo().IsValueType&&attr.IsRequire&& value==null)
+                            if (!pro.PropertyType.GetTypeInfo().IsValueType && attr.IsRequire && value == null)
                             {
                                 throw new WeiXinPayCoreException($"{pro.Name}的值为必填，不能为空");
                             }
                         }
                         //处理string,datetime类型和其他引用类型
-                        if (pro.PropertyType == typeof(string) || pro.PropertyType == typeof(DateTime)||!pro.PropertyType.GetTypeInfo().IsValueType)
+                        if (pro.PropertyType == typeof(string) || pro.PropertyType == typeof(DateTime) || !pro.PropertyType.GetTypeInfo().IsValueType)
                         {
                             if (value != null)
                             {
@@ -187,11 +207,13 @@ namespace WeiXinPayCore.Entity
                                     throw new WeiXinPayCoreException($"{pro.Name}的值：{value}超过{attr.Length}长度");
                                 }
                                 xmlBuilder.Append($"<{attr.Name}><![CDATA[{value}]]></{attr.Name}>");
+                             
                             }
                         }
-                        else 
+                        else
                         {
                             xmlBuilder.Append($"<{attr.Name}>{value}</{attr.Name}>");
+                        
                         }
                         break;
                     }

@@ -19,7 +19,7 @@ namespace WeiXinPayCore.Entity
         /// 商品详情
         /// </summary>
         [TradeField("detail", Length = 6000, IsRequire = false)]
-        public string Detail{ get; set; }
+        public string Detail { get; set; }
         /// <summary>
         /// 附加数据
         /// </summary>
@@ -73,17 +73,35 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 商品ID
         /// </summary>
-        [TradeField("product_id", Length = 32, IsRequire = false)]
-        public string ProductID { get; set; }
+        string _productID;
         /// <summary>
-        /// 指定支付方式
+        /// 商品ID
         /// </summary>
-        [TradeField("limit_pay", Length = 32, IsRequire = false)]
-        public string LimitPay { get; set; }
+        [TradeField("product_id", Length = 32, IsRequire = false)]
+        public string ProductID
+        {
+            get
+            {
+                if (TradeType != null && TradeType.ToUpper() == "NATIVE" && string.IsNullOrEmpty(_productID))
+                {
+                    throw new WeiXinPayCoreException($"TradeType=NATIVE时，ProductID不能为空！");
+                }
+                return _productID;
+            }
+            set
+            {
+                _productID = value;
+            }
+        }
+            /// <summary>
+            /// 指定支付方式
+            /// </summary>
+            [TradeField("limit_pay", Length = 32, IsRequire = false)]
+            public string LimitPay { get; set; }
         /// <summary>
         /// 用户标识
         /// </summary>
-        [TradeField("oppid",Length =128,IsRequire =false)]
+        [TradeField("oppid", Length = 128, IsRequire = false)]
         public string OpenID { get; set; }
     }
 }

@@ -26,6 +26,9 @@ namespace WeiXin_TestConsole
 
 
         }
+        /// <summary>
+        /// 扫码统一下单
+        /// </summary>
         static void UnifiedOrder()
         {
             var apps = File.ReadAllLines(@"D:\cert.txt");
@@ -34,16 +37,19 @@ namespace WeiXin_TestConsole
             {
                 AppID = apps[0],
                 MchID = apps[1],
-                Key= apps[3],
+                Key = apps[3],
                 Body = "test",
                 OutTradeNo = DateTime.Now.ToString("yyMMddhhmmss"),
                 ToalFee = 1,
                 SpbillCreateIP = "8.8.8.8",
                 NotifyURL = "http://www.abcd.com",
-                TradeType = "NATIVE"
+                TradeType = "NATIVE",
+                ProductID="123456"
             };
             var unifiedOrderBack = payHandle.Send(unifiedOrder) as UnifiedOrderBack;
 
         }
+
+   
     }
 }
