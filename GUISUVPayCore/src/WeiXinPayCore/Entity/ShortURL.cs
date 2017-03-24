@@ -5,7 +5,7 @@ using System.Text;
 namespace WeiXinPayCore.Entity
 {
     [Trade("https://api.mch.weixin.qq.com/tools/shorturl",RequireCertificate =false)]
-    class ShortURL:WeiXinPayParameters
+   public class ShortURL:WeiXinPayParameters
     {
         /// <summary>
         /// URL链接

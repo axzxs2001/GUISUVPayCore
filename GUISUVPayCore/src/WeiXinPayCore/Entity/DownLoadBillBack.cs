@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 下载对账单返回实体
     /// </summary>
-    class DownLoadBillBack:WeiXinPayBackParameters
+   public  class DownLoadBillBack:WeiXinPayBackParameters
     {
         //失败返回以下内容
         /// <summary>

@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 关闭订单返回实体
     /// </summary>
-    class CloseOrderBack:WeiXinPayBackParameters
+    public class CloseOrderBack : WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
@@ -27,7 +27,7 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 业务结果描述
         /// </summary>
-        [TradeField("result_msg",Length =32,IsRequire =true)]
+        [TradeField("result_msg", Length = 32, IsRequire = true)]
         public string ResultMsg { get; set; }
         /// <summary>
         /// 错误代码
@@ -39,6 +39,6 @@ namespace WeiXinPayCore.Entity
         /// </summary>
         [TradeField("err_code_des", Length = 128, IsRequire = false)]
         public string ErrCodeDes { get; set; }
-       
+
     }
 }

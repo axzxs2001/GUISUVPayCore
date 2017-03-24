@@ -8,7 +8,7 @@ namespace WeiXinPayCore.Entity
     /// 交易保障实体
     /// </summary>
     [Trade("https://api.mch.weixin.qq.com/payitil/report",RequireCertificate =false)]
-    class Report:WeiXinPayParameters
+  public class Report:WeiXinPayParameters
     {
         /// <summary>
         /// 接口url

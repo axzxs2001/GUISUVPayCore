@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 给微支付回调方法返回的实体
     /// </summary>
-    class NotifyBack:WeiXinPayBackParameters
+   public class NotifyBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码

@@ -5,7 +5,7 @@ using System.Text;
 namespace WeiXinPayCore.Entity
 {
     [Trade("https://api.mch.weixin.qq.com/pay/orderquery",RequireCertificate =false)]
-    class RefundQuery:WeiXinPayParameters
+   public class RefundQuery:WeiXinPayParameters
     {
         /// <summary>
         /// 微信订单号（微信订单号,商户订单号,商户退款单号,微信退款单号四选一）

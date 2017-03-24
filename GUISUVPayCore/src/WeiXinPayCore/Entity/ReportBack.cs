@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 交易保障返回实体
     /// </summary>
-    class ReportBack:WeiXinPayBackParameters
+  public class ReportBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
