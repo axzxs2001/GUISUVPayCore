@@ -6,6 +6,8 @@ using WeiXinPayCore;
 using WeiXinPayCore.Entity;
 using System.IO;
 using System.Text;
+using QRCoder;
+using System.Drawing;
 
 namespace WeiXin_TestConsole
 {
@@ -16,16 +18,35 @@ namespace WeiXin_TestConsole
 
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            Console.WriteLine("1、统一下单  ");
+            Console.WriteLine("1、统一下单  2、退单");
             switch (Console.ReadLine())
             {
                 case "1":
                     UnifiedOrder();
                     break;
+                case "2":
+                    NewMethod();
+                    break;
             }
 
 
         }
+
+         static void NewMethod()
+        {
+            var payHandle = new PayHandle();
+            var apps = File.ReadAllLines(@"D:\cert.txt");
+            var refund = new Refund() {
+                CertificatePath = @"D:\apiclient_cert.p12",
+            };
+
+            var refundBack = payHandle.Send(refund) as Refun;
+            if (refundBack.ResultCode == "SUCCESS")
+            {
+                
+            }
+        }
+
         /// <summary>
         /// 扫码统一下单
         /// </summary>
@@ -44,12 +65,37 @@ namespace WeiXin_TestConsole
                 SpbillCreateIP = "8.8.8.8",
                 NotifyURL = "http://www.abcd.com",
                 TradeType = "NATIVE",
-                ProductID="123456"
+                ProductID = "123456"
             };
             var unifiedOrderBack = payHandle.Send(unifiedOrder) as UnifiedOrderBack;
-
+            if(unifiedOrderBack.ResultCode=="SUCCESS")
+            {
+                SavaQR(unifiedOrderBack.CodeURL);
+            }
         }
 
-   
+        #region 生成二维码
+        /// <summary>
+        /// 生成二维码
+        /// </summary>
+        /// <param name="qrUrl">返回用来生成二维码的路径</param>
+        static  void SavaQR(string qrUrl)
+        {
+            try
+            {
+                var qrGenerator = new QRCodeGenerator();
+                var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+                var qrCodeImage = qrCode.GetGraphic(20);
+                qrCodeImage.Save($@"D:\\wx.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);              
+            }
+            catch
+            {
+                throw new WeiXinPayCoreException("生成二维码失败");
+            }
+        }
+        #endregion 
+
+
     }
 }

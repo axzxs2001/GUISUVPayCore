@@ -59,8 +59,9 @@ namespace WeiXinPayCore
                     }
                     var result = response.Content.ReadAsStringAsync().Result;
 
-                    var backEntity = new WeiXinPayBackParameters();
-                     backEntity.XMLToEntity(result, type.FullName);
+                    var assembly = this.GetType().GetTypeInfo().Assembly;
+                    var backEntity = Activator.CreateInstance(assembly.GetType($"{type.FullName}Back")) as WeiXinPayBackParameters;
+                     backEntity.XMLToEntity(result, backEntity);
                     return backEntity;
                 }
             }
@@ -106,9 +107,10 @@ namespace WeiXinPayCore
                     var url = attr.URL;
                     var response = await client.PostAsync(url, new System.Net.Http.StringContent(parmeter.ToXML()));
                     var result = await response.Content.ReadAsStringAsync();
-                    var backEntity = new WeiXinPayBackParameters();
-                    backEntity.XMLToEntity(result, type.FullName);
-                    return backEntity;                   
+                    var assembly = this.GetType().GetTypeInfo().Assembly;
+                    var backEntity = Activator.CreateInstance(assembly.GetType($"{this.GetType().FullName}Back")) as WeiXinPayBackParameters;
+                    backEntity.XMLToEntity(result, backEntity);
+                    return backEntity;
                 }
             }
             return null;

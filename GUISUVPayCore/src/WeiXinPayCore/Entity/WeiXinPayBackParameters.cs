@@ -89,10 +89,10 @@ namespace WeiXinPayCore.Entity
         /// <param name="xml">xml字符串</param>
         /// <param name="type">入参实体</param>
         /// <returns></returns>
-        public void XMLToEntity(string xml, string typeName)
+        public void XMLToEntity(string xml, WeiXinPayBackParameters backEntity)
         {
-            var assembly = this.GetType().GetTypeInfo().Assembly;
-            //var backEntity = Activator.CreateInstance(assembly.GetType($"{typeName}Back")) as WeiXinPayBackParameters;
+        
+            
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
             if (xmlDoc.HasChildNodes)
@@ -101,10 +101,11 @@ namespace WeiXinPayCore.Entity
                 {
                     var name = node.Name;
                     var value = node.InnerText;
-                    SetEntityProperty(this, name, value);
+                    SetEntityProperty(backEntity, name, value);
                 }
             }        
         }
+
         /// <summary>
         /// 把value赋给实体中属性的特性等于name的属性
         /// </summary>

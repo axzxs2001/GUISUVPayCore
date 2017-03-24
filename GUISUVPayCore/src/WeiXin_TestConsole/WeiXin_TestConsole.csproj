@@ -14,8 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="QRCodeCore" Version="1.0.0-alpha5" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.3.0" />
+    <PackageReference Include="ZKWeb.Fork.QRCoder" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

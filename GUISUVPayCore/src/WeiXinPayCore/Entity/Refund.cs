@@ -7,8 +7,8 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 申请退款
     /// </summary>
-    [Trade("https://api.mch.weixin.qq.com/secapi/pay/refund",RequireCertificate =true)]
-    class Refund:WeiXinPayParameters
+    [Trade("https://api.mch.weixin.qq.com/secapi/pay/refund", RequireCertificate = true)]
+    public class Refund : WeiXinPayParameters
     {
         /// <summary>
         /// 微信订单号（与商户订单号二选一）
@@ -23,32 +23,38 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 商户退款单号
         /// </summary>
-        [TradeField("out_refund_no",Length =32,IsRequire =true)]
+        [TradeField("out_refund_no", Length = 32, IsRequire = true)]
         public string OutRefundNo { get; set; }
         /// <summary>
         /// 订单金额
         /// </summary>
-        [TradeField("total_fee",IsRequire =true)]
+        [TradeField("total_fee", IsRequire = true)]
         public int TotalFee { get; set; }
         /// <summary>
         /// 退款金额
         /// </summary>
-        [TradeField("refund_fee",IsRequire =true)]
+        [TradeField("refund_fee", IsRequire = true)]
         public int RefundFee { get; set; }
         /// <summary>
         /// 货币种类
         /// </summary>
-        [TradeField("refund_fee_type",Length =8,IsRequire =false)]
+        [TradeField("refund_fee_type", Length = 8, IsRequire = false)]
         public string RefundFeeType { get; set; }
         /// <summary>
         /// 操作员
         /// </summary>
-        [TradeField("op_user_id",Length =32,IsRequire =true)]
+        [TradeField("op_user_id", Length = 32, IsRequire = true)]
         public string OpUserID { get; set; }
         /// <summary>
         /// 退款资金来源
         /// </summary>
-        [TradeField("refund_account",Length =30,IsRequire =false)]
+        [TradeField("refund_account", Length = 30, IsRequire = false)]
         public string RefundAccount { get; set; }
+
+        /// <summary>
+        /// 证书路径
+        /// </summary>
+        public string CertificatePath
+        { get; set; }
     }
 }

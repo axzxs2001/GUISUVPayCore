@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 申请退款返回实体
     /// </summary>
-    class RefundBack:WeiXinPayBackParameters
+    public class RefundBack : WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
@@ -52,12 +52,12 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 微信退款单号
         /// </summary>
-        [TradeField("refund_id",Length =28,IsRequire =true)]
+        [TradeField("refund_id", Length = 28, IsRequire = true)]
         public string RefundID { get; set; }
         /// <summary>
         /// 退款渠道
         /// </summary>
-        [TradeField("refund_channel",Length =16,IsRequire =false)]
+        [TradeField("refund_channel", Length = 16, IsRequire = false)]
         public string RefundChannel { get; set; }
         /// <summary>
         /// 退款金额
@@ -67,7 +67,7 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 应结退款金额
         /// </summary>
-        [TradeField("settlement_refund_fee",IsRequire =false)]
+        [TradeField("settlement_refund_fee", IsRequire = false)]
         public string SettlementRefund { get; set; }
         /// <summary>
         /// 标价金额（单位：分）
@@ -97,7 +97,7 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 现金退款金额
         /// </summary>
-        [TradeField("cash_refund_fee",IsRequire =false)]
+        [TradeField("cash_refund_fee", IsRequire = false)]
         public int CashRefundFee { get; set; }
         /// <summary>
         /// 代金卷类型
@@ -107,17 +107,17 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 代金卷退款总金额
         /// </summary>
-        [TradeField("coupon_refund_fee",IsRequire =false)]
+        [TradeField("coupon_refund_fee", IsRequire = false)]
         public int CouponRefundFee { get; set; }
         /// <summary>
         /// 单个代金卷退款金额
         /// </summary>
-        [TradeField("coupon_refund_fee_$n",IsRequire =false)]
+        [TradeField("coupon_refund_fee_$n", IsRequire = false)]
         public int CouponRefundFeeSn { get; set; }
         /// <summary>
         /// 退款代金券使用数量
         /// </summary>
-        [TradeField("coupon_refund_count",IsRequire =false)]
+        [TradeField("coupon_refund_count", IsRequire = false)]
         public int CouponRefundCount { get; set; }
         /// <summary>
         /// 退款代金卷ID
