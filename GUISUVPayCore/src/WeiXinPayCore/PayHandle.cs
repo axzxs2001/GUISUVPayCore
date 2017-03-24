@@ -59,68 +59,16 @@ namespace WeiXinPayCore
                     }
                     var result = response.Content.ReadAsStringAsync().Result;
 
-                    return XMLToEntity(result, type);
+                    var backEntity = new WeiXinPayBackParameters();
+                     backEntity.XMLToEntity(result, type.FullName);
+                    return backEntity;
                 }
             }
 
             return null;
 
         }
-        /// <summary>
-        /// xml字符串转实体
-        /// </summary>
-        /// <param name="xml">xml字符串</param>
-        /// <param name="type">入参实体</param>
-        /// <returns></returns>
-        WeiXinPayBackParameters XMLToEntity(string xml, Type type)
-        {
-            var assembly = this.GetType().GetTypeInfo().Assembly;
-            var backEntity = Activator.CreateInstance(assembly.GetType($"{type.FullName}Back")) as WeiXinPayBackParameters;
-           
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xml);
-            if (xmlDoc.HasChildNodes)
-            {
-                foreach (XmlNode node in xmlDoc.ChildNodes[0].ChildNodes)
-                {
-                    var name = node.Name;
-                    var value = node.InnerText;
-                    SetEntityProperty(backEntity, name, value);
-                }
-            }
-
-            return backEntity;
-        }
-        /// <summary>
-        /// 把value赋给实体中属性的特性等于name的属性
-        /// </summary>
-        /// <param name="backParameters">实体</param>
-        /// <param name="name">名称</param>
-        /// <param name="value">值 </param>
-        void SetEntityProperty(WeiXinPayBackParameters backParameters,string name,string value)
-        {
-            if(!string.IsNullOrEmpty(name)&&!string.IsNullOrEmpty(value))
-            {
-                var entityType = backParameters.GetType();
-                foreach (var pro in entityType.GetProperties())
-                {
-                    foreach (var att in pro.GetCustomAttributes(false))
-                    {
-                        if (att is TradeFieldAttribute)
-                        {
-                            var attr = att as TradeFieldAttribute;
-                            if(attr.Name==name && pro.CanWrite)
-                            {
-                               
-                                pro.SetValue(backParameters, Convert.ChangeType(value, pro.PropertyType));
-                            }
-                            break;
-                        }
-                    }
-                }
-
-            }
-        }
+ 
 
         /// <summary>
         /// 异步发送交易
@@ -158,7 +106,9 @@ namespace WeiXinPayCore
                     var url = attr.URL;
                     var response = await client.PostAsync(url, new System.Net.Http.StringContent(parmeter.ToXML()));
                     var result = await response.Content.ReadAsStringAsync();
-                    return XMLToEntity(result, type);
+                    var backEntity = new WeiXinPayBackParameters();
+                    backEntity.XMLToEntity(result, type.FullName);
+                    return backEntity;                   
                 }
             }
             return null;
