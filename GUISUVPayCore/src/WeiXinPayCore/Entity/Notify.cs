@@ -8,7 +8,7 @@ namespace WeiXinPayCore.Entity
     /// 微支付回调实体类
     /// </summary>
     [Trade("回到地址：可配置的",RequireCertificate =false)]
-    class Notify:WeiXinPayParameters
+   public  class Notify:WeiXinPayParameters
     {
         /// <summary>
         /// 返回状态码

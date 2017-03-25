@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 转换短链接返回实体
     /// </summary>
-    class ShortURLBack:WeiXinPayBackParameters
+   public class ShortURLBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码

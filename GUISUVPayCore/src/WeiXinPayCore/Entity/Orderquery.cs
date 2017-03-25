@@ -7,8 +7,8 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 查询订单交易
     /// </summary>
-    [Trade("https://api.mch.weixin.qq.com/pay/orderquery",RequireCertificate =false)]
-    class OrderQuery:WeiXinPayParameters
+    [Trade("https://api.mch.weixin.qq.com/pay/orderquery", RequireCertificate = false)]
+   public class OrderQuery:WeiXinPayParameters
     {
         /// <summary>
         /// 微信订单号（与商户订单号二选一）

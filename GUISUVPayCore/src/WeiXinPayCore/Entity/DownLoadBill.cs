@@ -5,7 +5,7 @@ using System.Text;
 namespace WeiXinPayCore.Entity
 {
     [Trade("https://api.mch.weixin.qq.com/pay/downloadbill",RequireCertificate =false)]
-    class DownLoadBill:WeiXinPayParameters
+  public class DownLoadBill:WeiXinPayParameters
     {
         /// <summary>
         /// 对账单日期

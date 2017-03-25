@@ -7,7 +7,7 @@ namespace WeiXinPayCore.Entity
     /// <summary>
     /// 查询订单交易返回实体
     /// </summary>
-    class OrderQueryBack:WeiXinPayBackParameters
+   public class OrderQueryBack:WeiXinPayBackParameters
     {
         /// <summary>
         /// 返回状态码
