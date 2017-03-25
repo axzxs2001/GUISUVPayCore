@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{691E0149-C6F1-4ED8-A430-C060D4CE5C04}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeiXin_TestConsole", "src\WeiXin_TestConsole\WeiXin_TestConsole.csproj", "{DF240D40-C271-4E69-98E9-8EA9AEB8E086}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeiXinPayCore", "src\WeiXinPayCore\WeiXinPayCore.csproj", "{3E827DBA-1757-45AE-9402-7FB4A6F597C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlipayPayCore", "AlipayPayCore\AlipayPayCore.csproj", "{59593F49-942F-47B2-B7E8-8481D9873616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alipay_TestConsole", "Alipay_TestConsole\Alipay_TestConsole.csproj", "{B4BEAB8B-E838-4008-B125-BE69DF279728}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,14 @@ Global
 		{3E827DBA-1757-45AE-9402-7FB4A6F597C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E827DBA-1757-45AE-9402-7FB4A6F597C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E827DBA-1757-45AE-9402-7FB4A6F597C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59593F49-942F-47B2-B7E8-8481D9873616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59593F49-942F-47B2-B7E8-8481D9873616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59593F49-942F-47B2-B7E8-8481D9873616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59593F49-942F-47B2-B7E8-8481D9873616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4BEAB8B-E838-4008-B125-BE69DF279728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4BEAB8B-E838-4008-B125-BE69DF279728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4BEAB8B-E838-4008-B125-BE69DF279728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4BEAB8B-E838-4008-B125-BE69DF279728}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +44,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DF240D40-C271-4E69-98E9-8EA9AEB8E086} = {691E0149-C6F1-4ED8-A430-C060D4CE5C04}
 		{3E827DBA-1757-45AE-9402-7FB4A6F597C4} = {691E0149-C6F1-4ED8-A430-C060D4CE5C04}
+		{59593F49-942F-47B2-B7E8-8481D9873616} = {691E0149-C6F1-4ED8-A430-C060D4CE5C04}
 	EndGlobalSection
 EndGlobal

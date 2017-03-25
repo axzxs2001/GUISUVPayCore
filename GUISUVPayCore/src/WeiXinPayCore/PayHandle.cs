@@ -105,7 +105,7 @@ namespace WeiXinPayCore
                         client = new HttpClient();
                     }
                     var url = attr.URL;
-                    var response = await client.PostAsync(url, new System.Net.Http.StringContent(parmeter.ToXML()));
+                    var response = await client.PostAsync(url, new StringContent(parmeter.ToXML()));
                     var result = await response.Content.ReadAsStringAsync();
                     var assembly = this.GetType().GetTypeInfo().Assembly;
                     var backEntity = Activator.CreateInstance(assembly.GetType($"{this.GetType().FullName}Back")) as WeiXinPayBackParameters;
