@@ -40,7 +40,7 @@ namespace WeiXin_TestConsole
                 CertificatePath = @"D:\apiclient_cert.p12",
             };
 
-            var refundBack = payHandle.Send(refund) as Refun;
+            var refundBack = payHandle.Send(refund) as RefundBack;
             if (refundBack.ResultCode == "SUCCESS")
             {
                 
