@@ -89,7 +89,7 @@ namespace WeiXinPayCore.Entity
         /// <param name="xml">xml字符串</param>
         /// <param name="type">入参实体</param>
         /// <returns></returns>
-        public void XMLToEntity(string xml, WeiXinPayBackParameters backEntity)
+        public void XMLToEntity(string xml)
         {
         
             
@@ -101,7 +101,7 @@ namespace WeiXinPayCore.Entity
                 {
                     var name = node.Name;
                     var value = node.InnerText;
-                    SetEntityProperty(backEntity, name, value);
+                    SetEntityProperty(this, name, value);
                 }
             }        
         }

@@ -8,6 +8,11 @@
   <ItemGroup>
     <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.3.0" />
+    <PackageReference Include="ZKWeb.Fork.QRCoder" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlipayPayCore\AlipayPayCore.csproj" />
   </ItemGroup>
 
 </Project>

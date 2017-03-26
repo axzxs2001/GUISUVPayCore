@@ -38,7 +38,12 @@ namespace AlipayPayCore.Entity
         public bool IsRequire
         { get; set; }
 
+        /// <summary>
+        /// 是否为公共参数
+        /// </summary>
     
+        public bool IsPublic
+        { get; set; }
 
    
     }

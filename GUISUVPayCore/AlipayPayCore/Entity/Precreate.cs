@@ -4,7 +4,11 @@ using System.Text;
 
 namespace AlipayPayCore.Entity
 {
-    public class Precreate
+    /// <summary>
+    /// 统一收单线下交易预创建 返回值 
+    /// </summary>
+    [Trade("alipay.trade.precreate")]
+    public class Precreate : AlipayPayParameters
     { /// <summary>
       /// 商户订单号,64个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复
       /// </summary>
@@ -38,26 +42,26 @@ namespace AlipayPayCore.Entity
         /// <summary>
         ///买家支付宝账号
         /// </summary>
-        [TradeField("buyer_logon_id", Length = 100, IsRequire = true)]
+        [TradeField("buyer_logon_id", Length = 100)]
         public string BuyerLogonId
         { get; set; }
         /// <summary>
         ///订单标题
         /// </summary>
-        [TradeField("subject ", Length = 256, IsRequire = true)]
-        public string Subject 
+        [TradeField("subject", Length = 256, IsRequire = true)]
+        public string Subject
         { get; set; }
         /// <summary>
         ///对交易或商品的描述
         /// </summary>
         [TradeField("body", Length = 128, IsRequire = false)]
-        public string Body 
+        public string Body
         { get; set; }
         /// <summary>
         ///订单包含的商品列表信息.Json格式. 其它说明详见：“商品明细说明
         /// </summary>
         [TradeField("goods_detail ", Length = 11, IsRequire = false)]
-        public List<GoodsDetail> GoodsDetail 
+        public List<GoodsDetail> GoodsDetail
         { get; set; }
         /// <summary>
         ///商户操作员编号
@@ -92,10 +96,9 @@ namespace AlipayPayCore.Entity
         /// <summary>
         ///描述分账信息，json格式。 
         /// </summary>
-        [TradeField("royalty_info ", Length = 0, IsRequire = false)]
-        public List<RoyaltyInfo> RoyaltyInfo 
+        [TradeField("royalty_info ", IsRequire = false)]
+        public List<RoyaltyInfo> RoyaltyInfo
         { get; set; }
-     
-
+       
     }
 }

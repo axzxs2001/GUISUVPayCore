@@ -61,7 +61,7 @@ namespace WeiXinPayCore
 
                     var assembly = this.GetType().GetTypeInfo().Assembly;
                     var backEntity = Activator.CreateInstance(assembly.GetType($"{type.FullName}Back")) as WeiXinPayBackParameters;
-                     backEntity.XMLToEntity(result, backEntity);
+                     backEntity.XMLToEntity(result);
                     return backEntity;
                 }
             }
@@ -109,7 +109,7 @@ namespace WeiXinPayCore
                     var result = await response.Content.ReadAsStringAsync();
                     var assembly = this.GetType().GetTypeInfo().Assembly;
                     var backEntity = Activator.CreateInstance(assembly.GetType($"{this.GetType().FullName}Back")) as WeiXinPayBackParameters;
-                    backEntity.XMLToEntity(result, backEntity);
+                    backEntity.XMLToEntity(result);
                     return backEntity;
                 }
             }

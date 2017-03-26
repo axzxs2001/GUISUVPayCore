@@ -13,15 +13,15 @@ namespace AlipayPayCore.Entity
         /// <summary>
         /// 构造
         /// </summary>
-        /// <param name="url">接口链接</param>
-        public TradeAttribute(string url)
+        /// <param name="method">接口链接</param>
+        public TradeAttribute(string method)
         {
-            URL = url;
+            Method = method;
         }
         /// <summary>
         /// 接口链接
         /// </summary>
-        public string URL
+        public string Method
         { get; private set; }
 
         /// <summary>

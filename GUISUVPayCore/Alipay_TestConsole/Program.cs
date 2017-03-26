@@ -6,12 +6,96 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Collections.Generic;
+using AlipayPayCore;
+using AlipayPayCore.Entity;
+using QRCoder;
 
 namespace Alipay_TestConsole
 {
     class Program
     {
         static void Main(string[] args)
+        {
+      
+            while (true)
+            {
+           
+                try
+                {
+                    System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    Console.WriteLine("1、统一下单  2、退单");
+                    switch (Console.ReadLine())
+                    {
+                        case "1":
+                            UnifiedOrder();
+                            break;
+                        case "2":
+                            Refund();
+                            break;
+                    }
+                }
+                catch(Exception exc)
+                {
+                    Console.WriteLine(exc.Message);
+                }
+            }
+        }
+        static void UnifiedOrder()
+        {
+            var apps = File.ReadAllLines(@"D:\alipay\app.txt");
+            var payHandle = new AlipayPayCore.PayHandle();
+            var precreate = new Precreate()
+            {
+                AppID = apps[0],
+                Charset = "utf-8",
+                SignType = "RSA",
+                Timestamp = "2017-03-25 03:07:50",
+                Version = "1.0",
+                OutTradeNo = "20150320010101001",
+                TotalAmount = 0.01m,
+                NotifyUrl="http://a.b.com",
+                Subject = "test"
+
+            };
+            var backPreccreate = payHandle.Send(precreate) as PrecreateBack;
+            if(backPreccreate.Code=="10000")
+            {
+                SavaQR(backPreccreate.QrCode);
+            }
+        }
+        static void Refund()
+        {
+
+        }
+        #region 生成二维码
+        /// <summary>
+        /// 生成二维码
+        /// </summary>
+        /// <param name="qrUrl">返回用来生成二维码的路径</param>
+        static void SavaQR(string qrUrl)
+        {
+            try
+            {
+                var qrGenerator = new QRCodeGenerator();
+                var qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+                var qrCodeImage = qrCode.GetGraphic(20);
+                qrCodeImage.Save($@"D:\\alipay.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            }
+            catch
+            {
+                throw new AlipayPayCoreException("生成二维码失败");
+            }
+        }
+        #endregion 
+
+
+
+
+
+
+        static void Send()
         {
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var client = new HttpClient();
@@ -34,16 +118,33 @@ namespace Alipay_TestConsole
             reqStream.Dispose();
 
             var rsp = (HttpWebResponse)request.GetResponseAsync().Result;
-      
+
             var arr = new byte[rsp.ContentLength];
             rsp.GetResponseStream().Read(arr, 0, arr.Length);
             var result = Encoding.UTF8.GetString(arr);
-            var qian= result.Split(new string[] { ",\"sign\":\"" , "{\"alipay_trade_precreate_response\":" }, StringSplitOptions.None)[1];
-            var sss= result.Split(new string[] { "sign\":\"" }, StringSplitOptions.None)[1].Trim('}','"');
+            var qian = result.Split(new string[] { ",\"sign\":\"", "{\"alipay_trade_precreate_response\":" }, StringSplitOptions.None)[1];
+            var sss = result.Split(new string[] { "sign\":\"" }, StringSplitOptions.None)[1].Trim('}', '"');
             RSACheckContent(qian, sss, "utf-8");
+
+
+            var dicc = Json.JsonParser.FromJson(result);
+            foreach (var ddd in dicc)
+            {
+                if (ddd.Key.ToLower() != "sign")
+                {
+
+                    var dddd = ddd.Value as IDictionary<string, object>;
+                    object vv;
+                    dddd.TryGetValue("code", out vv);
+
+                    Console.WriteLine(vv);
+                }
+            }
             Console.WriteLine(result);
+
             Console.Read();
         }
+
         /// <summary>
         /// 验证返回答名与值
         /// </summary>
@@ -51,7 +152,7 @@ namespace Alipay_TestConsole
         /// <param name="sign"></param>
         /// <param name="charset"></param>
         /// <returns></returns>
-        public static bool RSACheckContent(string signContent, string sign,  string charset)
+        public static bool RSACheckContent(string signContent, string sign, string charset)
         {
 
             try

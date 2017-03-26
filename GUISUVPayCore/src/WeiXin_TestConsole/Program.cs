@@ -15,9 +15,7 @@ namespace WeiXin_TestConsole
     {
         public static void Main(string[] args)
         {
-
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             Console.WriteLine("1、统一下单  2、退单");
             switch (Console.ReadLine())
             {
@@ -25,14 +23,12 @@ namespace WeiXin_TestConsole
                     UnifiedOrder();
                     break;
                 case "2":
-                    NewMethod();
+                    Refund();
                     break;
             }
-
-
         }
 
-         static void NewMethod()
+         static void Refund()
         {
             var payHandle = new PayHandle();
             var apps = File.ReadAllLines(@"D:\cert.txt");

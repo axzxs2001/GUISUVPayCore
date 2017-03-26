@@ -17,17 +17,16 @@ namespace AlipayPayCore
       /// <returns></returns>
         public AlipayPayBackParameters Send(AlipayPayParameters parmeter)
         {
-            foreach (var att in parmeter.GetType().GetTypeInfo().GetCustomAttributes(false))
-            {
-                if (att is TradeAttribute)
-                {
-                    var atts = att as TradeAttribute;
-                    var result = Request(atts.URL, parmeter.ToString(), "utf-8");
-
-
-                }
-            }
-            return null;
+            var charset = "utf-8";
+            var type = parmeter.GetType().GetTypeInfo();
+            var url = "https://openapi.alipay.com/gateway.do?charset="+ charset;
+            var content = parmeter.ToString();
+            var result = Request(url, content, charset);
+            //json转实体
+            var assembly = this.GetType().GetTypeInfo().Assembly;
+            var backEntity = Activator.CreateInstance(assembly.GetType($"{type.FullName}Back")) as AlipayPayBackParameters;
+            backEntity.JsonToEntity(result);
+            return backEntity;
         }
 
         string Request(string url, string content, string charset)
@@ -49,7 +48,7 @@ namespace AlipayPayCore
             responseSteam.Dispose();
             var result = Encoding.GetEncoding(charset).GetString(dataArr);
             return result;
-       
+
         }
 
     }
