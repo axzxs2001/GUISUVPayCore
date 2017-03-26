@@ -15,7 +15,7 @@ namespace AlipayPayCore.Entity
         /// <summary>
         /// 网关返回码
         /// </summary>
-        [TradeField("code",IsRequire =true)]
+        [TradeField("code", IsRequire = true)]
         public string Code
         { get; set; }
 
@@ -41,7 +41,7 @@ namespace AlipayPayCore.Entity
         /// <summary>
         /// 签名
         /// </summary>
-        [TradeField("sign",IsRequire =true)]
+        [TradeField("sign", IsRequire = true)]
         public string Sign
         { get; set; }
 
@@ -52,11 +52,17 @@ namespace AlipayPayCore.Entity
         {
             var type = this.GetType();
             var valueDic = Json.JsonParser.FromJson(json);
-
+            var signContent = "";
+            var sign = "";
             foreach (var pari in valueDic)
             {
+                if (pari.Key.ToLower() == "sign")
+                {
+                    sign = pari.Value.ToString();
+                }
                 if (pari.Key.ToLower() != "sign")
                 {
+                    signContent =Json.JsonParser.ToJson((pari.Value as IDictionary<string, object>));
                     foreach (var pro in type.GetProperties())
                     {
                         foreach (var att in pro.GetCustomAttributes(false))
@@ -66,15 +72,19 @@ namespace AlipayPayCore.Entity
                                 var atts = att as TradeFieldAttribute;
                                 object value;
                                 (pari.Value as IDictionary<string, object>).TryGetValue(atts.Name, out value);
-                                if(value!=null)
+                                if (value != null)
                                 {
                                     pro.SetValue(this, Convert.ChangeType(value, pro.PropertyType));
                                 }
                             }
                         }
                     }
-                    break;
                 }
+            }
+
+            if (!RSACheckContent(signContent, sign, "utf-8"))
+            {
+                throw new AlipayPayCoreException("返回报文验证失败");
             }
         }
 
@@ -108,7 +118,7 @@ namespace AlipayPayCore.Entity
                     var sha1 = SHA1.Create();
                     var signBase64 = Convert.FromBase64String(sign);
                     var bVerifyResultOriginal = rsa.VerifyData(Encoding.GetEncoding(charset).GetBytes(signContent), sha1, signBase64);
-             
+
                     return bVerifyResultOriginal;
                 }
             }
