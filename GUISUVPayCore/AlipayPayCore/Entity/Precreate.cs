@@ -95,12 +95,7 @@ namespace AlipayPayCore.Entity
         [TradeField("royalty_info ", Length = 0, IsRequire = false)]
         public List<RoyaltyInfo> RoyaltyInfo 
         { get; set; }
-        /// <summary>
-        ///商户机具终端编号 
-        /// </summary>
-        [TradeField("terminal_id", Length = 32, IsRequire = false)]
-        public string TerminalId
-        { get; set; }
+     
 
     }
 }

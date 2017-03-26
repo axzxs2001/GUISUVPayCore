@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace AlipayPayCore.Entity
 {
@@ -38,7 +39,7 @@ namespace AlipayPayCore.Entity
         /// 商户生成签名字符串所使用的签名算法类型，目前支持RSA2和RSA，推荐使用RSA2
         /// </summary>
         [TradeField("sign_type", Length = 10, IsRequire = true)]
-        public string SignType 
+        public string SignType
         { get; set; }
         /// <summary>
         /// 商户请求参数的签名串，详见签名
@@ -76,14 +77,56 @@ namespace AlipayPayCore.Entity
         [TradeField("biz_content", Length = 0, IsRequire = true)]
         public string BizContent
         { get; set; }
-       
+
         /// <summary>
-        /// 转JSON
+        /// 转传输字符串
         /// </summary>
         /// <returns></returns>
-        public string ToJson()
+        public override string ToString()
         {
-            return null;
+            var sortDic = new SortedDictionary<string, dynamic>();
+            foreach (var pro in this.GetType().GetProperties())
+            {
+                foreach (var att in pro.GetCustomAttributes(false))
+                {
+                    if (att is TradeFieldAttribute)
+                    {
+                        var attr = att as TradeFieldAttribute;
+                        //获取值
+                        var value = pro.GetValue(this);
+                        ValidateValue();
+                        //验证必填值不能为空
+                        void ValidateValue()
+                        {
+                            //判断引用类型，必填值为空的，抛异常
+                            if (!pro.PropertyType.GetTypeInfo().IsValueType && attr.IsRequire && value == null)
+                            {
+                                throw new AlipayPayCoreException($"{pro.Name}的值为必填，不能为空");
+                            }
+                        }
+                        //判断不为空
+                        if (value != null)
+                        {
+                            if (attr.Length < Encoding.UTF8.GetByteCount(value.ToString()))
+                            {
+                                throw new AlipayPayCoreException($"{pro.Name}的值：{value}超过{attr.Length}长度");
+                            }   
+                            //判断是否为默认值 
+                            if (pro.GetValue(this).ToString() != Activator.CreateInstance(pro.PropertyType).ToString())
+                            {
+                                sortDic.Add(attr.Name, value);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            var charBuild = new StringBuilder();
+            foreach (var pair in sortDic)
+            {
+                charBuild.Append($"{pair.Key}={pair.Value}&");
+            }
+            return charBuild.ToString().TrimEnd('&');
         }
 
     }

@@ -1,10 +1,12 @@
 ﻿using AlipayPayCore.Entity;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-
+using System.Text;
+using System.Reflection.Emit;
 namespace AlipayPayCore
 {
     public class PayHandle
@@ -15,50 +17,39 @@ namespace AlipayPayCore
       /// <returns></returns>
         public AlipayPayBackParameters Send(AlipayPayParameters parmeter)
         {
-            var type = parmeter.GetType();
-            foreach (var att in type.GetTypeInfo().GetCustomAttributes())
+            foreach (var att in parmeter.GetType().GetTypeInfo().GetCustomAttributes(false))
             {
                 if (att is TradeAttribute)
                 {
-                    var attr = att as TradeAttribute;
-                    HttpClient client = null;
-                    //有证书
-                    if (attr.RequireCertificate)
-                    {
-                        //证书路径
-                        var certificatePathPro = type.GetProperty("CertificatePath");
-                        var certificatePath = certificatePathPro.GetValue(parmeter).ToString();
-                        //证书密码
-                        var certificatePasswordPro = type.GetProperty("MchID");
-                        var certificatePassword = certificatePasswordPro.GetValue(parmeter).ToString();
-                        var handler = new HttpClientHandler();
-                        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                        handler.SslProtocols = SslProtocols.Tls12;
-                        handler.ClientCertificates.Add(new X509Certificate2(certificatePath, certificatePassword));
-                        client = new HttpClient(handler);
-                    }
-                    else//无证书
-                    {
-                        client = new HttpClient();
-                    }
-                    var url = attr.URL;
-                    var response = client.PostAsync(url, new System.Net.Http.StringContent(parmeter.ToJson())).Result;
-                    //处理返回异常
-                    if (response.StatusCode != System.Net.HttpStatusCode.OK)
-                    {
-                        throw new AlipayPayCoreException($"http通迅错误，StatusCode：{response.StatusCode}  内容：{response.RequestMessage.Content}");
-                    }
-                    var result = response.Content.ReadAsStringAsync().Result;
+                    var atts = att as TradeAttribute;
+                    var result = Request(atts.URL, parmeter.ToString(), "utf-8");
 
-                    var assembly = this.GetType().GetTypeInfo().Assembly;
-                    var backEntity = Activator.CreateInstance(assembly.GetType($"{type.FullName}Back")) as AlipayPayBackParameters;
-                    backEntity.JsonToEntity(result, backEntity);
-                    return backEntity;
+
                 }
             }
-
             return null;
+        }
 
+        string Request(string url, string content, string charset)
+        {
+            //发送数据
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "POST";
+            request.ContinueTimeout = 1000;
+            request.ContentType = $"application/x-www-form-urlencoded;charset={charset}";
+            var postData = Encoding.GetEncoding(charset).GetBytes(content);
+            var requestStream = request.GetRequestStreamAsync().Result;
+            requestStream.Write(postData, 0, postData.Length);
+            requestStream.Dispose();
+            //接收数据
+            var rsp = (HttpWebResponse)request.GetResponseAsync().Result;
+            var dataArr = new byte[rsp.ContentLength];
+            var responseSteam = rsp.GetResponseStream();
+            responseSteam.Read(dataArr, 0, dataArr.Length);
+            responseSteam.Dispose();
+            var result = Encoding.GetEncoding(charset).GetString(dataArr);
+            return result;
+       
         }
 
     }
