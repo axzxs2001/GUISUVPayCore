@@ -9,9 +9,10 @@ namespace AlipayPayCore.Entity
     /// </summary>
     [Trade("alipay.trade.precreate")]
     public class Precreate : AlipayPayParameters
-    { /// <summary>
-      /// 商户订单号,64个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复
-      /// </summary>
+    {
+        /// <summary>
+        /// 商户订单号,64个字符以内、只能包含字母、数字、下划线；需保证在商户端不重复
+        /// </summary>
         [TradeField("out_trade_no", Length = 64, IsRequire = true)]
         public string OutTradeNo
         { get; set; }
@@ -99,6 +100,6 @@ namespace AlipayPayCore.Entity
         [TradeField("royalty_info ", IsRequire = false)]
         public List<RoyaltyInfo> RoyaltyInfo
         { get; set; }
-       
+
     }
 }
