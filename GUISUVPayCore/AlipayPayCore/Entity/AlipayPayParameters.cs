@@ -101,7 +101,7 @@ namespace AlipayPayCore.Entity
         public override string ToString()
         {
             var sortDic = new SortedDictionary<string, dynamic>();
-            var contentDic = new Dictionary<string, dynamic>();
+            var contentDic = new SortedDictionary<string, dynamic>();
             foreach (var pro in this.GetType().GetProperties())
             {
                 foreach (var att in pro.GetCustomAttributes(false))
@@ -227,10 +227,9 @@ namespace AlipayPayCore.Entity
             byte[] signatureBytes = null;
             try
             {
-                RSACryptoServiceProvider rsaCsp = null;
                 //字符串获取
                 var datas = Convert.FromBase64String(privateKeyPem);
-                rsaCsp = DecodeRSAPrivateKey(datas, signType);
+                var rsaCsp = DecodeRSAPrivateKey(datas, signType);
                 byte[] dataBytes = null;
                 if (string.IsNullOrEmpty(charset))
                 {
@@ -254,7 +253,6 @@ namespace AlipayPayCore.Entity
                 {
                     signatureBytes = rsaCsp.SignData(dataBytes, "SHA1");
                 }
-
             }
             catch (Exception ex)
             {

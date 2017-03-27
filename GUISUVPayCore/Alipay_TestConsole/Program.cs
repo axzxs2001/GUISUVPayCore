@@ -42,7 +42,8 @@ namespace Alipay_TestConsole
         static void UnifiedOrder()
         {
             var apps = File.ReadAllLines(@"D:\alipay\app.txt");
-            var payHandle = new AlipayPayCore.PayHandle();
+            Console.WriteLine("请输入订单号：");
+            var tradeNo = Console.ReadLine();
             var precreate = new Precreate()
             {
                 AppID = apps[0],
@@ -50,21 +51,40 @@ namespace Alipay_TestConsole
                 SignType = "RSA",
                 Timestamp = "2017-03-25 03:07:50",
                 Version = "1.0",
-                OutTradeNo = "20150320010101001",
+                OutTradeNo = "20150320010101001",// tradeNo,
                 TotalAmount = 0.01m,
                 NotifyUrl = "http://a.b.com",
-                Subject = "test"
-
+                Subject = "test123"
             };
+            var payHandle = new AlipayPayCore.PayHandle();
             var backPreccreate = payHandle.Send(precreate) as PrecreateBack;
             if (backPreccreate.Code == "10000")
             {
                 SavaQR(backPreccreate.QrCode);
             }
+            else
+            {
+                Console.WriteLine($"Code:{backPreccreate.Code} Message:{backPreccreate.Message}");
+            }
         }
         static void Refund()
         {
-
+            var apps = File.ReadAllLines(@"D:\alipay\app.txt");
+            Console.WriteLine("请输入订单号：");
+            var tradeNo = Console.ReadLine();
+            var refund = new Refund()
+            {
+                AppID = apps[0],
+                Charset = "utf-8",
+                SignType = "RSA",
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:dd"),
+                Version = "1.0",
+                OutTradeNo = tradeNo,
+                RefundAmount=0.01m
+            };
+            var payHandle = new AlipayPayCore.PayHandle();
+            var backRefund = payHandle.Send(refund) as RefundBack;
+            Console.WriteLine($"code:{backRefund.Code} msg:{backRefund.Message}");
         }
         #region 生成二维码
         /// <summary>

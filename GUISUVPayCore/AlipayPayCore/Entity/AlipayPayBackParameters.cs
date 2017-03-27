@@ -62,7 +62,7 @@ namespace AlipayPayCore.Entity
                 }
                 if (pari.Key.ToLower() != "sign")
                 {
-                    signContent =Json.JsonParser.ToJson((pari.Value as IDictionary<string, object>));
+                    signContent = Json.JsonParser.ToJson((pari.Value as IDictionary<string, object>));
                     foreach (var pro in type.GetProperties())
                     {
                         foreach (var att in pro.GetCustomAttributes(false))
@@ -81,10 +81,12 @@ namespace AlipayPayCore.Entity
                     }
                 }
             }
-
-            if (!RSACheckContent(signContent, sign, "utf-8"))
+            if (Code == "10000")
             {
-                throw new AlipayPayCoreException("返回报文验证失败");
+                if (!RSACheckContent(signContent, sign, "utf-8"))
+                {
+                    throw new AlipayPayCoreException("返回报文验证失败");
+                }
             }
         }
 
