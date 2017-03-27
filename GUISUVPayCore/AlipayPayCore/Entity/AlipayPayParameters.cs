@@ -157,9 +157,9 @@ namespace AlipayPayCore.Entity
                     }
                 }
             }
-
+            //字典转json
             var bizContent = Json.JsonParser.ToJson(contentDic);
-      
+            //添加json数据
             sortDic.Add("biz_content", bizContent);
             var signCharBuild = new StringBuilder();
             foreach (var pair in sortDic)
@@ -178,8 +178,8 @@ namespace AlipayPayCore.Entity
             return charBuild.ToString().TrimEnd('&');
         }
 
-
-        static  string AseEncrypt(string bizContent)
+        #region 数据加密处理
+        string AseEncrypt(string bizContent)
         {
 
             var buffer = Encoding.UTF8.GetBytes(bizContent);
@@ -208,13 +208,21 @@ namespace AlipayPayCore.Entity
             }
             return Convert.ToBase64String(result);
         }
-        static byte[] GetRandomData(int bits)
+        byte[] GetRandomData(int bits)
         {
             var result = new byte[bits / 8];
             RandomNumberGenerator.Create().GetBytes(result);
             return result;
         }
-        static string RSASignCharSet(string data, string privateKeyPem, string charset, string signType)
+        /// <summary>
+        /// 生成加密数据
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="privateKeyPem"></param>
+        /// <param name="charset"></param>
+        /// <param name="signType"></param>
+        /// <returns></returns>
+        string RSASignCharSet(string data, string privateKeyPem, string charset, string signType)
         {
             byte[] signatureBytes = null;
             try
@@ -255,7 +263,7 @@ namespace AlipayPayCore.Entity
             return Convert.ToBase64String(signatureBytes);
         }
 
-        static RSACryptoServiceProvider DecodeRSAPrivateKey(byte[] privkey, string signType)
+        RSACryptoServiceProvider DecodeRSAPrivateKey(byte[] privkey, string signType)
         {
             byte[] MODULUS, E, D, P, Q, DP, DQ, IQ;
 
@@ -341,7 +349,7 @@ namespace AlipayPayCore.Entity
                 binr.Dispose();
             }
         }
-        static int GetIntegerSize(BinaryReader binr)
+        int GetIntegerSize(BinaryReader binr)
         {
             byte bt = 0;
             byte lowbyte = 0x00;
@@ -374,6 +382,6 @@ namespace AlipayPayCore.Entity
             binr.BaseStream.Seek(-1, SeekOrigin.Current);		//last ReadByte wasn't a removed zero, so back up a byte
             return count;
         }
-
+        #endregion
     }
 }

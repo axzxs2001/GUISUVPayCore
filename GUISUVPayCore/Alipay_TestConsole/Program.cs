@@ -17,10 +17,8 @@ namespace Alipay_TestConsole
     {
         static void Main(string[] args)
         {
-      
             while (true)
             {
-           
                 try
                 {
                     System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -35,7 +33,7 @@ namespace Alipay_TestConsole
                             break;
                     }
                 }
-                catch(Exception exc)
+                catch (Exception exc)
                 {
                     Console.WriteLine(exc.Message);
                 }
@@ -54,12 +52,12 @@ namespace Alipay_TestConsole
                 Version = "1.0",
                 OutTradeNo = "20150320010101001",
                 TotalAmount = 0.01m,
-                NotifyUrl="http://a.b.com",
+                NotifyUrl = "http://a.b.com",
                 Subject = "test"
 
             };
             var backPreccreate = payHandle.Send(precreate) as PrecreateBack;
-            if(backPreccreate.Code=="10000")
+            if (backPreccreate.Code == "10000")
             {
                 SavaQR(backPreccreate.QrCode);
             }
@@ -88,12 +86,12 @@ namespace Alipay_TestConsole
                 throw new AlipayPayCoreException("生成二维码失败");
             }
         }
-        #endregion 
+        #endregion
 
 
 
 
-
+        #region 测试用代码
 
         static void Send()
         {
@@ -295,8 +293,6 @@ namespace Alipay_TestConsole
             }
             return Convert.ToBase64String(signatureBytes);
         }
-
-
         private static RSACryptoServiceProvider DecodeRSAPrivateKey(byte[] privkey, string signType)
         {
             byte[] MODULUS, E, D, P, Q, DP, DQ, IQ;
@@ -416,6 +412,7 @@ namespace Alipay_TestConsole
             binr.BaseStream.Seek(-1, SeekOrigin.Current);		//last ReadByte wasn't a removed zero, so back up a byte
             return count;
         }
+        #endregion
     }
 
     public static class RSACryptoServiceProviderExtension
