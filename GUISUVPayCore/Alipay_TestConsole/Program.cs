@@ -19,6 +19,9 @@ namespace Alipay_TestConsole
         {
             while (true)
             {
+
+                Send();
+                continue;
                 try
                 {
                     System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -39,6 +42,8 @@ namespace Alipay_TestConsole
                 }
             }
         }
+
+        #region 交易
         static void UnifiedOrder()
         {
             var apps = File.ReadAllLines(@"D:\alipay\app.txt");
@@ -80,7 +85,7 @@ namespace Alipay_TestConsole
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:dd"),
                 Version = "1.0",
                 OutTradeNo = tradeNo,
-                RefundAmount=0.01m
+                RefundAmount = 0.01m
             };
             var payHandle = new AlipayPayCore.PayHandle();
             var backRefund = payHandle.Send(refund) as RefundBack;
@@ -108,7 +113,7 @@ namespace Alipay_TestConsole
         }
         #endregion
 
-
+        #endregion
 
 
         #region 测试用代码
@@ -118,12 +123,12 @@ namespace Alipay_TestConsole
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var client = new HttpClient();
             var url = "https://openapi.alipay.com/gateway.do?charset=utf-8";
-
-            var BizContent = "{\"out_trade_no\":\"20150320010101001\",\"total_amount\":0.01,\"subject\":\"test\"}";
+            var apps = File.ReadAllLines(@"D:\alipay\app.txt");
+            var BizContent = "{\"out_trade_no\":\"20150320010101002\",\"total_amount\":0.01,\"subject\":\"test\"}";
             var privatepem = File.ReadAllText(@"D:\alipay\a.pem");
-            var signCharts = $@"app_id=2015051800079230&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
+            var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
             var sign = RSASignCharSet(signCharts, privatepem, null, "RSA");
-            var json = $@"app_id=2015051800079230&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign={sign}&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
+            var json = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign={sign}&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
 
 
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -142,7 +147,7 @@ namespace Alipay_TestConsole
             var result = Encoding.UTF8.GetString(arr);
             var qian = result.Split(new string[] { ",\"sign\":\"", "{\"alipay_trade_precreate_response\":" }, StringSplitOptions.None)[1];
             var sss = result.Split(new string[] { "sign\":\"" }, StringSplitOptions.None)[1].Trim('}', '"');
-            RSACheckContent(qian, sss, "utf-8");
+            RSACheckContent(qian, sss, "utf-8","RSA");
 
 
             var dicc = Json.JsonParser.FromJson(result);
@@ -170,22 +175,22 @@ namespace Alipay_TestConsole
         /// <param name="sign"></param>
         /// <param name="charset"></param>
         /// <returns></returns>
-        public static bool RSACheckContent(string signContent, string sign, string charset)
+        public static bool RSACheckContent(string signContent, string sign, string charset,string signType)
         {
 
             try
             {
                 var sPublicKeyPEM = File.ReadAllText("D:/alipay/c.pem");
-                //if ("RSA2".Equals(signType))
-                //{
-                //    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-                //    rsa.PersistKeyInCsp = false;
-                //    RSACryptoServiceProviderExtension.LoadPublicKeyPEM(rsa, sPublicKeyPEM);
+                if ("RSA2".Equals(signType))
+                {
+                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                    rsa.PersistKeyInCsp = false;
+                    RSACryptoServiceProviderExtension.LoadPublicKeyPEM(rsa, sPublicKeyPEM);
 
-                //    bool bVerifyResultOriginal = rsa.VerifyData(Encoding.GetEncoding(charset).GetBytes(signContent), "SHA256", Convert.FromBase64String(sign));
-                //    return bVerifyResultOriginal;
-                //}
-                //else
+                    bool bVerifyResultOriginal = rsa.VerifyData(Encoding.GetEncoding(charset).GetBytes(signContent), "SHA256", Convert.FromBase64String(sign));
+                    return bVerifyResultOriginal;
+                }
+                else
                 {
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
                     rsa.PersistKeyInCsp = false;
