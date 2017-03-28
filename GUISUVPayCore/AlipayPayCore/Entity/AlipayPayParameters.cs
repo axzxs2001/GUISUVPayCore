@@ -217,12 +217,12 @@ namespace AlipayPayCore.Entity
             return result;
         }
         /// <summary>
-        /// 生成加密数据
+        /// 生成签名数据
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="privateKeyPem"></param>
-        /// <param name="charset"></param>
-        /// <param name="signType"></param>
+        /// <param name="data">签名字符串</param>
+        /// <param name="privateKeyPem">私钥</param>
+        /// <param name="charset">编码</param>
+        /// <param name="signType">签名类型</param>
         /// <returns></returns>
         string RSASignCharSet(string data, string privateKeyPem, string charset, string signType)
         {
@@ -256,20 +256,24 @@ namespace AlipayPayCore.Entity
                     signatureBytes = rsaCsp.SignData(dataBytes, "SHA1");
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("您使用的私钥格式错误，请检查RSA私钥配置" + ",charset = " + charset);
+                throw new AlipayPayCoreException("您使用的私钥格式错误，请检查RSA私钥配置" + ",charset = " + charset);
             }
             return Convert.ToBase64String(signatureBytes);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="privkey"></param>
+        /// <param name="signType"></param>
+        /// <returns></returns>
         RSACryptoServiceProvider DecodeRSAPrivateKey(byte[] privkey, string signType)
         {
             byte[] MODULUS, E, D, P, Q, DP, DQ, IQ;
-
             // --------- Set up stream to decode the asn.1 encoded RSA private key ------
-            MemoryStream mem = new MemoryStream(privkey);
-            BinaryReader binr = new BinaryReader(mem);  //wrap Memory Stream with BinaryReader for easy reading
+            var mem = new MemoryStream(privkey);
+            var binr = new BinaryReader(mem);  //wrap Memory Stream with BinaryReader for easy reading
             byte bt = 0;
             ushort twobytes = 0;
             int elems = 0;
@@ -282,14 +286,12 @@ namespace AlipayPayCore.Entity
                     binr.ReadInt16();    //advance 2 bytes
                 else
                     return null;
-
                 twobytes = binr.ReadUInt16();
                 if (twobytes != 0x0102) //version number
                     return null;
                 bt = binr.ReadByte();
                 if (bt != 0x00)
                     return null;
-
 
                 //------ all private key components are Integer sequences ----
                 elems = GetIntegerSize(binr);
@@ -326,9 +328,8 @@ namespace AlipayPayCore.Entity
                 {
                     bitLen = 2048;
                 }
-
-                RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(bitLen, CspParameters);
-                RSAParameters RSAparams = new RSAParameters();
+                var RSA = new RSACryptoServiceProvider(bitLen, CspParameters);
+                var RSAparams = new RSAParameters();
                 RSAparams.Modulus = MODULUS;
                 RSAparams.Exponent = E;
                 RSAparams.D = D;
@@ -340,7 +341,7 @@ namespace AlipayPayCore.Entity
                 RSA.ImportParameters(RSAparams);
                 return RSA;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -349,6 +350,11 @@ namespace AlipayPayCore.Entity
                 binr.Dispose();
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="binr"></param>
+        /// <returns></returns>
         int GetIntegerSize(BinaryReader binr)
         {
             byte bt = 0;
