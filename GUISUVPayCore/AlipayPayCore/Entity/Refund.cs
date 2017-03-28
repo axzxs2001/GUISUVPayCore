@@ -20,8 +20,10 @@ namespace AlipayPayCore.Entity
         /// <summary>
         /// 需要退款的金额，该金额不能大于订单金额,单位为元，支持两位小数
         /// </summary>
-        [TradeField("refund_amount ",IsRequire =true)]
+        [TradeField("refund_amount ",Length =9,IsRequire =true)]
         public decimal RefundAmount
         { get; set; }
+
+
     }
 }

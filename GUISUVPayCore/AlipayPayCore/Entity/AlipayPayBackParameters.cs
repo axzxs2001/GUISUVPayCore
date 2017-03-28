@@ -83,7 +83,7 @@ namespace AlipayPayCore.Entity
             }
             if (Code == "10000")
             {
-                if (!RSACheckContent(signContent, sign, "utf-8"))
+                if (!RSACheckContent(signContent, sign, "utf-8","RSA"))
                 {
                     throw new AlipayPayCoreException("返回报文验证失败");
                 }
@@ -97,22 +97,21 @@ namespace AlipayPayCore.Entity
         /// <param name="sign"></param>
         /// <param name="charset"></param>
         /// <returns></returns>
-        bool RSACheckContent(string signContent, string sign, string charset)
+        bool RSACheckContent(string signContent, string sign, string charset,string signType)
         {
-
             try
             {
-                var sPublicKeyPEM = File.ReadAllText("D:/alipay/c.pem");
-                //if ("RSA2".Equals(signType))
-                //{
-                //    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-                //    rsa.PersistKeyInCsp = false;
-                //    RSACryptoServiceProviderExtension.LoadPublicKeyPEM(rsa, sPublicKeyPEM);
+                var sPublicKeyPEM = File.ReadAllText("D:/alipay/alipay_rsa_public_key.pem");
+                if ("RSA2".Equals(signType))
+                {
+                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                    rsa.PersistKeyInCsp = false;
+                    RSACryptoServiceProviderExtension.LoadPublicKeyPEM(rsa, sPublicKeyPEM);
 
-                //    bool bVerifyResultOriginal = rsa.VerifyData(Encoding.GetEncoding(charset).GetBytes(signContent), "SHA256", Convert.FromBase64String(sign));
-                //    return bVerifyResultOriginal;
-                //}
-                //else
+                    bool bVerifyResultOriginal = rsa.VerifyData(Encoding.GetEncoding(charset).GetBytes(signContent), "SHA256", Convert.FromBase64String(sign));
+                    return bVerifyResultOriginal;
+                }
+                else
                 {
                     var rsa = new RSACryptoServiceProvider();
                     rsa.PersistKeyInCsp = false;

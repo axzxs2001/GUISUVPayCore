@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.IO;
+using System.Net;
 
 namespace AlipayPayCore.Entity
 {
@@ -166,14 +167,14 @@ namespace AlipayPayCore.Entity
             {
                 signCharBuild.Append($"{pair.Key}={pair.Value}&");
             }
-            var privatepem = File.ReadAllText(@"D:\alipay\a.pem");
+            var privatepem = File.ReadAllText(@"D:\alipay\rsa_private_key.pem");
             var signString = signCharBuild.ToString().TrimEnd('&');
             var sign = RSASignCharSet(signString, privatepem, null, "RSA");
             sortDic.Add("sign", sign);
             var charBuild = new StringBuilder();
             foreach (var pair in sortDic)
             {
-                charBuild.Append($"{pair.Key}={pair.Value}&");
+                charBuild.Append($"{pair.Key}={WebUtility.UrlEncode(pair.Value)}&");
             }
             return charBuild.ToString().TrimEnd('&');
         }

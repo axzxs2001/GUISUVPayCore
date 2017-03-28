@@ -18,10 +18,7 @@ namespace Alipay_TestConsole
         static void Main(string[] args)
         {
             while (true)
-            {
-
-                Send();
-                continue;
+            {             
                 try
                 {
                     System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -54,9 +51,9 @@ namespace Alipay_TestConsole
                 AppID = apps[0],
                 Charset = "utf-8",
                 SignType = "RSA",
-                Timestamp = "2017-03-25 03:07:50",
+                Timestamp =DateTime .Now.ToString("yyyy-MM-dd HH:mm:ss"),// "2017-03-25 03:07:50",
                 Version = "1.0",
-                OutTradeNo = "20150320010101001",// tradeNo,
+                OutTradeNo = tradeNo,
                 TotalAmount = 0.01m,
                 NotifyUrl = "http://a.b.com",
                 Subject = "test123"
@@ -89,7 +86,14 @@ namespace Alipay_TestConsole
             };
             var payHandle = new AlipayPayCore.PayHandle();
             var backRefund = payHandle.Send(refund) as RefundBack;
-            Console.WriteLine($"code:{backRefund.Code} msg:{backRefund.Message}");
+            if (backRefund.Code == "10000")
+            {
+                Console.WriteLine($"code:{backRefund.Code} msg:{backRefund.Message}");
+            }
+            else
+            {
+                Console.WriteLine($"code:{backRefund.Code} msg:{backRefund.Message} SubCode:{backRefund.SubCode}  SubMessage:{backRefund.SubMessage}");
+            }
         }
         #region 生成二维码
         /// <summary>
@@ -124,18 +128,18 @@ namespace Alipay_TestConsole
             var client = new HttpClient();
             var url = "https://openapi.alipay.com/gateway.do?charset=utf-8";
             var apps = File.ReadAllLines(@"D:\alipay\app.txt");
-            var BizContent = "{\"out_trade_no\":\"20150320010101002\",\"total_amount\":0.01,\"subject\":\"test\"}";
-            var privatepem = File.ReadAllText(@"D:\alipay\a.pem");
-            var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
+            var BizContent = "{\"out_trade_no\":\"20150320010101001\",\"subject\":\"test\",\"total_amount\":0.02}";
+            var privatepem = File.ReadAllText(@"D:\alipay\rsa_private_key.pem");
+            var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
             var sign = RSASignCharSet(signCharts, privatepem, null, "RSA");
-            var json = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&notify_url=http://a.b.com&sign={sign}&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
-
+            var json = $@"app_id={WebUtility.UrlEncode(apps[0])}&biz_content={WebUtility.UrlEncode(BizContent)}&charset={WebUtility.UrlEncode("utf -8")}&method={WebUtility.UrlEncode("alipay.trade.precreate")}&sign={WebUtility.UrlEncode(sign)}&sign_type={WebUtility.UrlEncode("RSA")}&timestamp={WebUtility.UrlEncode("2017-03-25 03:07:50")}&version={WebUtility.UrlEncode("1.0")}";
+        ;
 
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
             request.ContinueTimeout = 1000;
             request.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
-            byte[] postData = Encoding.GetEncoding("utf-8").GetBytes(json);
+            byte[] postData = Encoding.UTF8.GetBytes(json);
             var reqStream = request.GetRequestStreamAsync().Result;
             reqStream.Write(postData, 0, postData.Length);
             reqStream.Dispose();
@@ -147,8 +151,8 @@ namespace Alipay_TestConsole
             var result = Encoding.UTF8.GetString(arr);
             var qian = result.Split(new string[] { ",\"sign\":\"", "{\"alipay_trade_precreate_response\":" }, StringSplitOptions.None)[1];
             var sss = result.Split(new string[] { "sign\":\"" }, StringSplitOptions.None)[1].Trim('}', '"');
-            RSACheckContent(qian, sss, "utf-8","RSA");
-
+           var vaResult= RSACheckContent(qian, sss, "utf-8","RSA");
+            Console.WriteLine("验证结果" + vaResult);
 
             var dicc = Json.JsonParser.FromJson(result);
             foreach (var ddd in dicc)
@@ -168,6 +172,7 @@ namespace Alipay_TestConsole
             Console.Read();
         }
 
+        #region 验证
         /// <summary>
         /// 验证返回答名与值
         /// </summary>
@@ -177,10 +182,9 @@ namespace Alipay_TestConsole
         /// <returns></returns>
         public static bool RSACheckContent(string signContent, string sign, string charset,string signType)
         {
-
             try
             {
-                var sPublicKeyPEM = File.ReadAllText("D:/alipay/c.pem");
+                var sPublicKeyPEM = File.ReadAllText("D:/alipay/alipay_rsa_public_key.pem");
                 if ("RSA2".Equals(signType))
                 {
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
@@ -202,8 +206,9 @@ namespace Alipay_TestConsole
                     return bVerifyResultOriginal;
                 }
             }
-            catch
+            catch(Exception exc)
             {
+                Console.WriteLine(exc.Message);
                 return false;
             }
 
@@ -278,6 +283,8 @@ namespace Alipay_TestConsole
             RandomNumberGenerator.Create().GetBytes(result);
             return result;
         }
+#endregion
+
         public static string RSASignCharSet(string data, string privateKeyPem, string charset, string signType)
         {
             byte[] signatureBytes = null;
