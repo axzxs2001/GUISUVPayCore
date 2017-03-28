@@ -20,10 +20,40 @@ namespace AlipayPayCore.Entity
         /// <summary>
         /// 需要退款的金额，该金额不能大于订单金额,单位为元，支持两位小数
         /// </summary>
-        [TradeField("refund_amount ",Length =9,IsRequire =true)]
+        [TradeField("refund_amount",Length =9,IsRequire =true)]
         public decimal RefundAmount
         { get; set; }
 
+        /// <summary>
+        /// 退款的原因说明
+        /// </summary>
+        [TradeField("refund_reason", Length = 256)]
+        public string RefundReason
+        { get; set; }
 
+        /// <summary>
+        /// 标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传。
+        /// </summary>
+        [TradeField("out_request_no", Length = 64)]
+        public string OutRequestNo
+        { get; set; }
+        /// <summary>
+        /// 商户的操作员编号
+        /// </summary>
+        [TradeField("operator_id", Length = 30)]
+        public string OperatorId
+        { get; set; }
+        /// <summary>
+        ///商户的门店编号
+        /// </summary>
+        [TradeField("store_id", Length = 32)]
+        public string Store_Id
+        { get; set; }
+        /// <summary>
+        ///商户的终端编号
+        /// </summary>
+        [TradeField("terminal_id", Length = 32)]
+        public string TerminalId
+        { get; set; }
     }
 }

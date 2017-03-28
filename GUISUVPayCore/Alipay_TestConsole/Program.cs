@@ -18,7 +18,9 @@ namespace Alipay_TestConsole
         static void Main(string[] args)
         {
             while (true)
-            {             
+            {
+                //Send();
+                //continue;
                 try
                 {
                     System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -79,10 +81,11 @@ namespace Alipay_TestConsole
                 AppID = apps[0],
                 Charset = "utf-8",
                 SignType = "RSA",
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:dd"),
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 Version = "1.0",
                 OutTradeNo = tradeNo,
-                RefundAmount = 0.01m
+                RefundAmount = 0.01m,
+                RefundReason = "his收费失败"
             };
             var payHandle = new AlipayPayCore.PayHandle();
             var backRefund = payHandle.Send(refund) as RefundBack;
@@ -128,12 +131,12 @@ namespace Alipay_TestConsole
             var client = new HttpClient();
             var url = "https://openapi.alipay.com/gateway.do?charset=utf-8";
             var apps = File.ReadAllLines(@"D:\alipay\app.txt");
-            var BizContent = "{\"out_trade_no\":\"20150320010101001\",\"subject\":\"test\",\"total_amount\":0.02}";
+            var BizContent = "{\"out_trade_no\":\"121213\",\"refund_amount\":0.01}";
             var privatepem = File.ReadAllText(@"D:\alipay\rsa_private_key.pem");
-            var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&method=alipay.trade.precreate&sign_type=RSA&timestamp=2017-03-25 03:07:50&version=1.0";
+            var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&format=json&method=alipay.trade.refund&sign_type=RSA&timestamp=2017-03-28 11:42:50&version=1.0";
             var sign = RSASignCharSet(signCharts, privatepem, null, "RSA");
-            var json = $@"app_id={WebUtility.UrlEncode(apps[0])}&biz_content={WebUtility.UrlEncode(BizContent)}&charset={WebUtility.UrlEncode("utf -8")}&method={WebUtility.UrlEncode("alipay.trade.precreate")}&sign={WebUtility.UrlEncode(sign)}&sign_type={WebUtility.UrlEncode("RSA")}&timestamp={WebUtility.UrlEncode("2017-03-25 03:07:50")}&version={WebUtility.UrlEncode("1.0")}";
-        ;
+            var json = $@"biz_content={WebUtility.UrlEncode(BizContent)}&method={WebUtility.UrlEncode("alipay.trade.refund")}&version={WebUtility.UrlEncode("1.0")}&app_id={WebUtility.UrlEncode(apps[0])}&format=json&timestamp={WebUtility.UrlEncode("2017-03-28 11:42:50")}&sign_type={WebUtility.UrlEncode("RSA")}&charset={WebUtility.UrlEncode("utf -8")}&sign={WebUtility.UrlEncode(sign)}";
+      
 
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";

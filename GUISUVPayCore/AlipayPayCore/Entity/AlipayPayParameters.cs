@@ -117,7 +117,7 @@ namespace AlipayPayCore.Entity
                         void ValidateValue()
                         {
                             //判断引用类型，必填值为空的，抛异常
-                            if (attr.Name != "sign" && attr.Name != "biz_content" && !pro.PropertyType.GetTypeInfo().IsValueType && attr.IsRequire && value == null)
+                            if (attr.Name.Trim() != "sign" && attr.Name.Trim() != "biz_content" && !pro.PropertyType.GetTypeInfo().IsValueType && attr.IsRequire && value == null)
                             {
                                 throw new AlipayPayCoreException($"{pro.Name}的值为必填，不能为空");
                             }
@@ -131,7 +131,8 @@ namespace AlipayPayCore.Entity
                             }
                             //判断值类型和引用类型
                             if (pro.PropertyType.GetTypeInfo().IsValueType)
-                            {//判断是否为默认值 
+                            {
+                                //判断是否为默认值 
                                 if (pro.GetValue(this).ToString() != Activator.CreateInstance(pro.PropertyType).ToString())
                                 {
                                     AddDic();
@@ -146,11 +147,11 @@ namespace AlipayPayCore.Entity
                             {
                                 if (attr.IsPublic)
                                 {
-                                    sortDic.Add(attr.Name, value);
+                                    sortDic.Add(attr.Name.Trim(), value);
                                 }
                                 else
                                 {
-                                    contentDic.Add(attr.Name, value);
+                                    contentDic.Add(attr.Name.Trim(), value);
                                 }
                             }
                         }
