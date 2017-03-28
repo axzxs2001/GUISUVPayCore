@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+
 
 namespace AlipayPayCore.Entity
 {
@@ -63,33 +65,63 @@ namespace AlipayPayCore.Entity
                 if (pari.Key.ToLower() != "sign")
                 {
                     signContent = Json.JsonParser.ToJson((pari.Value as IDictionary<string, object>));
-                    foreach (var pro in type.GetProperties())
-                    {
-                        foreach (var att in pro.GetCustomAttributes(false))
-                        {
-                            if (att is TradeFieldAttribute)
-                            {
-                                var atts = att as TradeFieldAttribute;
-                                object value;
-                                (pari.Value as IDictionary<string, object>).TryGetValue(atts.Name, out value);
-                                if (value != null)
-                                {
-                                    pro.SetValue(this, Convert.ChangeType(value, pro.PropertyType));
-                                }
-                            }
-                        }
-                    }
+                    BiuldEntity(signContent, this);
                 }
             }
             if (Code == "10000")
             {
-                if (!RSACheckContent(signContent, sign, "utf-8","RSA"))
+                if (!RSACheckContent(signContent, sign, "utf-8", "RSA"))
                 {
                     throw new AlipayPayCoreException("返回报文验证失败");
                 }
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="backEntity"></param>
+        /// <returns></returns>
+        void BiuldEntity(string json, AlipayPayBackParameters backEntity)
+        {
+            var valueDic = Json.JsonParser.FromJson(json);
+            var type = backEntity.GetType();
+            foreach (var pro in type.GetProperties())
+            {
+                foreach (var att in pro.GetCustomAttributes(false))
+                {
+                    if (att is TradeFieldAttribute)
+                    {
+                        var atts = att as TradeFieldAttribute;
+                        if (pro.PropertyType.IsConstructedGenericType)
+                        {
+                            object value;
+                            valueDic.TryGetValue(atts.Name, out value);
+                            if (value != null && (value as IDictionary<string, object>[]).Length > 0)
+                            {
+                                var proValue = Activator.CreateInstance(pro.PropertyType) as IList;
+                                foreach (var itemJson in (value as IDictionary<string, object>[]))
+                                {
+                                    var proItemType = pro.PropertyType.GetElementType();
+                                    var item = Activator.CreateInstance(proItemType) as AlipayPayBackParameters;
+                                    BiuldEntity(Json.JsonParser.ToJson(itemJson), item);
+                                    proValue.Add(item);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            object value;
+                            valueDic.TryGetValue(atts.Name, out value);
+                            if (value != null)
+                            {
+                                pro.SetValue(backEntity, Convert.ChangeType(value, pro.PropertyType));
+                            }
+                        }
+                    }
+                }
+            }
+        }
         /// <summary>
         /// 验证返回答名与值
         /// </summary>
@@ -97,7 +129,7 @@ namespace AlipayPayCore.Entity
         /// <param name="sign"></param>
         /// <param name="charset"></param>
         /// <returns></returns>
-        bool RSACheckContent(string signContent, string sign, string charset,string signType)
+        bool RSACheckContent(string signContent, string sign, string charset, string signType)
         {
             try
             {

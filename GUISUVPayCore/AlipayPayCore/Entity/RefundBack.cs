@@ -16,6 +16,12 @@ namespace AlipayPayCore.Entity
         public string OutTradeNo
         { get; set; }
         /// <summary>
+        /// 支付宝交易号，和商户订单号不能同时为空
+        /// </summary>
+        [TradeField("trade_no", Length = 64, IsRequire = false)]
+        public string TradeNo
+        { get; set; }
+        /// <summary>
         /// 买家支付宝用户号，该参数已废弃，请不要使用 
         /// </summary>
         [TradeField("open_id", Length = 32, IsRequire = true)]

@@ -17,6 +17,13 @@ namespace Alipay_TestConsole
     {
         static void Main(string[] args)
         {
+            var list = new List<Program>();
+            Console.WriteLine(list.GetType().IsConstructedGenericType);
+            var arr = new Program[9];
+            Console.WriteLine(arr.GetType().IsArray);
+            Console.WriteLine(arr.GetType().IsConstructedGenericType);
+            return;
+
             while (true)
             {
                 //Send();
