@@ -82,7 +82,7 @@ namespace AlipayPayCore.Entity
         /// <param name="json"></param>
         /// <param name="backEntity"></param>
         /// <returns></returns>
-        void BiuldEntity(string json, AlipayPayBackParameters backEntity)
+        public void BiuldEntity(string json, AlipayPayBackParameters backEntity)
         {
             var valueDic = Json.JsonParser.FromJson(json);
             var type = backEntity.GetType();
@@ -97,16 +97,17 @@ namespace AlipayPayCore.Entity
                         {
                             object value;
                             valueDic.TryGetValue(atts.Name, out value);
-                            if (value != null && (value as IDictionary<string, object>[]).Length > 0)
+                            if (value != null && (value as IList).Count > 0)
                             {
                                 var proValue = Activator.CreateInstance(pro.PropertyType) as IList;
-                                foreach (var itemJson in (value as IDictionary<string, object>[]))
+                                foreach (IDictionary<string,object> itemJson in (value as IList))
                                 {
-                                    var proItemType = pro.PropertyType.GetElementType();
+                                    var proItemType = pro.PropertyType.GetGenericArguments()[0];
                                     var item = Activator.CreateInstance(proItemType) as AlipayPayBackParameters;
                                     BiuldEntity(Json.JsonParser.ToJson(itemJson), item);
                                     proValue.Add(item);
                                 }
+                                pro.SetValue(backEntity, proValue);
                             }
                         }
                         else

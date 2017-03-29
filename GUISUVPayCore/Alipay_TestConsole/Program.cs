@@ -13,16 +13,39 @@ using QRCoder;
 
 namespace Alipay_TestConsole
 {
+
+    public class BB : AlipayPayBackParameters
+    {
+        [TradeField("a")]
+        public string A
+        { get; set; }
+
+
+        [TradeField("b")]
+        public int B
+        { get; set; }
+    }
+    public class AA : AlipayPayBackParameters
+    {
+        [TradeField("abc")]
+        public string ABC
+        { get; set; }
+        [TradeField("bbb")]
+        public List<BB> BBS
+        { get; set; }
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            var list = new List<Program>();
-            Console.WriteLine(list.GetType().IsConstructedGenericType);
-            var arr = new Program[9];
-            Console.WriteLine(arr.GetType().IsArray);
-            Console.WriteLine(arr.GetType().IsConstructedGenericType);
-            return;
+            var aa = new AA();
+
+            var json = "{\"abc\":\"张三\",\"bbb\":[{\"a\":\"药1\",\"b\":123},{\"a\":\"药1\",\"b\":123},]}";
+           aa.BiuldEntity(json, aa);
+
+            Console.Read();
+
+
 
             while (true)
             {
@@ -60,7 +83,7 @@ namespace Alipay_TestConsole
                 AppID = apps[0],
                 Charset = "utf-8",
                 SignType = "RSA",
-                Timestamp =DateTime .Now.ToString("yyyy-MM-dd HH:mm:ss"),// "2017-03-25 03:07:50",
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),// "2017-03-25 03:07:50",
                 Version = "1.0",
                 OutTradeNo = tradeNo,
                 TotalAmount = 0.01m,
@@ -143,7 +166,7 @@ namespace Alipay_TestConsole
             var signCharts = $@"app_id={apps[0]}&biz_content={BizContent}&charset=utf-8&format=json&method=alipay.trade.refund&sign_type=RSA&timestamp=2017-03-28 11:42:50&version=1.0";
             var sign = RSASignCharSet(signCharts, privatepem, null, "RSA");
             var json = $@"biz_content={WebUtility.UrlEncode(BizContent)}&method={WebUtility.UrlEncode("alipay.trade.refund")}&version={WebUtility.UrlEncode("1.0")}&app_id={WebUtility.UrlEncode(apps[0])}&format=json&timestamp={WebUtility.UrlEncode("2017-03-28 11:42:50")}&sign_type={WebUtility.UrlEncode("RSA")}&charset={WebUtility.UrlEncode("utf -8")}&sign={WebUtility.UrlEncode(sign)}";
-      
+
 
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
@@ -161,7 +184,7 @@ namespace Alipay_TestConsole
             var result = Encoding.UTF8.GetString(arr);
             var qian = result.Split(new string[] { ",\"sign\":\"", "{\"alipay_trade_precreate_response\":" }, StringSplitOptions.None)[1];
             var sss = result.Split(new string[] { "sign\":\"" }, StringSplitOptions.None)[1].Trim('}', '"');
-           var vaResult= RSACheckContent(qian, sss, "utf-8","RSA");
+            var vaResult = RSACheckContent(qian, sss, "utf-8", "RSA");
             Console.WriteLine("验证结果" + vaResult);
 
             var dicc = Json.JsonParser.FromJson(result);
@@ -190,7 +213,7 @@ namespace Alipay_TestConsole
         /// <param name="sign"></param>
         /// <param name="charset"></param>
         /// <returns></returns>
-        public static bool RSACheckContent(string signContent, string sign, string charset,string signType)
+        public static bool RSACheckContent(string signContent, string sign, string charset, string signType)
         {
             try
             {
@@ -216,7 +239,7 @@ namespace Alipay_TestConsole
                     return bVerifyResultOriginal;
                 }
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 Console.WriteLine(exc.Message);
                 return false;
@@ -293,7 +316,7 @@ namespace Alipay_TestConsole
             RandomNumberGenerator.Create().GetBytes(result);
             return result;
         }
-#endregion
+        #endregion
 
         public static string RSASignCharSet(string data, string privateKeyPem, string charset, string signType)
         {
