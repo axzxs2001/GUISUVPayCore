@@ -38,6 +38,11 @@ namespace Alipay_TestConsole
     {
         static void Main(string[] args)
         {
+
+            bool isWindows = System.Runtime.InteropServices.RuntimeInformation
+                                               .IsOSPlatform(OSPlatform.Windows);
+            Console.WriteLine(isWindows);
+            return;
             var aa = new AA();
 
             var json = "{\"alipay.trade.refund\":{\"abc\":\"张三\",\"bbb\":[{\"a\":\"药1\",\"b\":123},{\"a\":\"药1\",\"b\":123},]},\"sign\":\"TYfe83Dfe923^#43fdffdf(Dfdferf3ef324fs(Ef8dsfds\"}";

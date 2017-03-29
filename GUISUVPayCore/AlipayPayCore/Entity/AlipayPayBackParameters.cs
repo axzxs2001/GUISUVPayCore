@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -68,7 +69,8 @@ namespace AlipayPayCore.Entity
                     BiuldEntity(signContent, this);
                 }
             }
-            if (Code == "10000")
+            if (Code == "10000" && RuntimeInformation
+                                               .IsOSPlatform(OSPlatform.Windows))
             {
                 if (!RSACheckContent(signContent, sign, "utf-8", "RSA"))
                 {
