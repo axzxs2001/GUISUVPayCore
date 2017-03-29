@@ -40,13 +40,10 @@ namespace Alipay_TestConsole
         {
             var aa = new AA();
 
-            var json = "{\"abc\":\"张三\",\"bbb\":[{\"a\":\"药1\",\"b\":123},{\"a\":\"药1\",\"b\":123},]}";
-           aa.BiuldEntity(json, aa);
+            var json = "{\"alipay.trade.refund\":{\"abc\":\"张三\",\"bbb\":[{\"a\":\"药1\",\"b\":123},{\"a\":\"药1\",\"b\":123},]},\"sign\":\"TYfe83Dfe923^#43fdffdf(Dfdferf3ef324fs(Ef8dsfds\"}";
+           aa.JsonToEntity(json);
 
             Console.Read();
-
-
-
             while (true)
             {
                 //Send();

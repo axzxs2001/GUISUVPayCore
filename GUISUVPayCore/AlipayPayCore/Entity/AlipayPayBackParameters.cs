@@ -77,13 +77,14 @@ namespace AlipayPayCore.Entity
             }
         }
         /// <summary>
-        /// 
+        /// json转实体
         /// </summary>
-        /// <param name="json"></param>
-        /// <param name="backEntity"></param>
+        /// <param name="json">json字符串</param>
+        /// <param name="backEntity">实体类</param>
         /// <returns></returns>
         public void BiuldEntity(string json, AlipayPayBackParameters backEntity)
         {
+            //转成字典
             var valueDic = Json.JsonParser.FromJson(json);
             var type = backEntity.GetType();
             foreach (var pro in type.GetProperties())
@@ -93,10 +94,11 @@ namespace AlipayPayCore.Entity
                     if (att is TradeFieldAttribute)
                     {
                         var atts = att as TradeFieldAttribute;
+                        //处理集合属性
                         if (pro.PropertyType.IsConstructedGenericType)
-                        {
-                            object value;
-                            valueDic.TryGetValue(atts.Name, out value);
+                        {                      
+                            //获取对应属性的值
+                            valueDic.TryGetValue(atts.Name, out object value);
                             if (value != null && (value as IList).Count > 0)
                             {
                                 var proValue = Activator.CreateInstance(pro.PropertyType) as IList;
@@ -104,6 +106,7 @@ namespace AlipayPayCore.Entity
                                 {
                                     var proItemType = pro.PropertyType.GetGenericArguments()[0];
                                     var item = Activator.CreateInstance(proItemType) as AlipayPayBackParameters;
+                                    //递归处理集合中的子对象
                                     BiuldEntity(Json.JsonParser.ToJson(itemJson), item);
                                     proValue.Add(item);
                                 }
@@ -112,8 +115,8 @@ namespace AlipayPayCore.Entity
                         }
                         else
                         {
-                            object value;
-                            valueDic.TryGetValue(atts.Name, out value);
+                            //处理非集合属性                           
+                            valueDic.TryGetValue(atts.Name, out object value);
                             if (value != null)
                             {
                                 pro.SetValue(backEntity, Convert.ChangeType(value, pro.PropertyType));
