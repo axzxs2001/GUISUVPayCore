@@ -69,6 +69,16 @@ namespace WeiXin_TestConsole
                 SavaQR(unifiedOrderBack.CodeURL);
             }
         }
+        static OrderQueryBack OrderQuery(string str)
+        {
+            var payHandle = new PayHandle();
+            var orderQuery = new OrderQuery
+            {
+                OutTradeNo = str
+            };
+            var orderQueryBack = payHandle.Send(orderQuery) as OrderQueryBack;
+            return orderQueryBack;
+        }
 
         #region 生成二维码
         /// <summary>
