@@ -16,7 +16,7 @@ namespace WeiXin_TestConsole
         public static void Main(string[] args)
         {
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Console.WriteLine("1、统一下单  2、退单");
+            Console.WriteLine("1、统一下单  2、退单 3、查询订单");
             switch (Console.ReadLine())
             {
                 case "1":
@@ -24,6 +24,10 @@ namespace WeiXin_TestConsole
                     break;
                 case "2":
                     Refund();
+                    break;
+                case "3":
+                   
+                    Console.WriteLine(OrderQuery("170408102028"));
                     break;
             }
         }
@@ -71,12 +75,23 @@ namespace WeiXin_TestConsole
         }
         static OrderQueryBack OrderQuery(string str)
         {
+            var apps = File.ReadAllLines(@"D:\cert.txt");
             var payHandle = new PayHandle();
             var orderQuery = new OrderQuery
             {
-                OutTradeNo = str
+                AppID = apps[0],
+                MchID = apps[1],
+                Key = apps[3],
+               //// SpbillCreateIP = "8.8.8.8",
+               //// NotifyURL = "http://www.abcd.com",
+               // TradeType = "NATIVE",
+               // ProductID = "123456",
+                OutTradeNo = str,
+                //TODO 此处有问题
+                TransactionID="123456"
             };
             var orderQueryBack = payHandle.Send(orderQuery) as OrderQueryBack;
+            
             return orderQueryBack;
         }
 
