@@ -77,7 +77,6 @@ namespace WeiXin_TestConsole
         {
             var apps = File.ReadAllLines(@"D:\cert.txt");
             var payHandle = new PayHandle();
-
             var orderQuery = new OrderQuery
             {
                 AppID = apps[0],
