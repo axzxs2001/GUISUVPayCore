@@ -76,6 +76,7 @@ namespace WeiXin_TestConsole
         static OrderQueryBack OrderQuery(string str)
         {
             var apps = File.ReadAllLines(@"D:\cert.txt");
+
             var payHandle = new PayHandle();
             var orderQuery = new OrderQuery
             {
