@@ -48,7 +48,7 @@ namespace WeiXinPayCore.Entity
         /// <summary>
         /// 商户订单号
         /// </summary>
-        [TradeField("out_trade_no", Length = 32, IsRequire = true)]
+        [TradeField("out_trade_no", Length = 32, IsRequire = false)]
         public string OutTradeNo { get; set; }
         /// <summary>
         /// 访问接口IP

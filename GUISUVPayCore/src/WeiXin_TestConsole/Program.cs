@@ -16,7 +16,7 @@ namespace WeiXin_TestConsole
         public static void Main(string[] args)
         {
             System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Console.WriteLine("1、统一下单  2、退单 3、查询订单 4、查询退单");
+            Console.WriteLine("1、统一下单  2、退单 3、查询订单 4、查询退单 5、关闭订单 6、下载对账单 7、交易保障 8、转换短链接");
             switch (Console.ReadLine())
             {
                 case "1":
@@ -31,9 +31,29 @@ namespace WeiXin_TestConsole
                 case "4":
                     QueryRefundBack("170412084313");
                     break;
+                case "5":
+                    var str=Console.ReadLine();
+                    CloseOrder(str);
+                    break;
+                case "6":
+                    DownLoadBill();
+                    break;
+                case "7":
+                    Report();
+                    break;
+                case "8":
+                   var back= UnifiedOrder();
+                    GetShortUrl(back);
+                    break;
+                case "9":
+                    Test();
+                    break;
             }
         }
-
+        /// <summary>
+        /// 退单
+        /// </summary>
+        /// <param name="str">商户单号</param>
          static void Refund(string str)
         {
             var payHandle = new PayHandle();
@@ -60,7 +80,7 @@ namespace WeiXin_TestConsole
         /// <summary>
         /// 扫码统一下单
         /// </summary>
-        static void UnifiedOrder()
+        static string UnifiedOrder()
         {
             var apps = File.ReadAllLines(@"D:\cert.txt");
             var payHandle = new PayHandle();
@@ -80,8 +100,9 @@ namespace WeiXin_TestConsole
             var unifiedOrderBack = payHandle.Send(unifiedOrder) as UnifiedOrderBack;
             if(unifiedOrderBack.ResultCode=="SUCCESS")
             {
-                SavaQR(unifiedOrderBack.CodeURL);
+               SavaQR(unifiedOrderBack.CodeURL);
             }
+            return unifiedOrderBack.CodeURL;
         }
         /// <summary>
         /// 查询订单
@@ -128,6 +149,74 @@ namespace WeiXin_TestConsole
             return refundQueryBack;
         }
 
+        static CloseOrderBack CloseOrder(string str)
+        {
+            var apps = File.ReadAllLines(@"D:\cert.txt");
+            var payHandle = new PayHandle();
+            var closeOrder = new CloseOrder
+            {
+                AppID = apps[0],
+                MchID = apps[1],
+                Key = apps[3],
+                OutTradeNO=str
+            };
+            var closeOrderBack = payHandle.Send(closeOrder) as CloseOrderBack;
+            return closeOrderBack;
+        }
+        /// <summary>
+        /// 下载对账单
+        /// </summary>
+        /// <returns></returns>
+        static DownLoadBillBack DownLoadBill()
+        {
+            var apps = File.ReadAllLines(@"D:\cert.txt");
+            var payHandle = new PayHandle();
+            var downLoadBill = new DownLoadBill
+            {
+                AppID = apps[0],
+                MchID = apps[1],
+                Key = apps[3],
+                BillDate = "20170509",
+                BillType="SUCCESS"
+            };
+            var downLoadBillBack = payHandle.Send(downLoadBill) as DownLoadBillBack;
+            return downLoadBillBack;
+        }
+        static ReportBack Report()
+        {
+            var apps = File.ReadAllLines(@"D:\cert.txt");
+            var payHandle = new PayHandle();
+            var report = new Report() {
+                AppID = apps[0],
+                MchID = apps[1],
+                Key = apps[3],
+                InterfaceURL= "https://api.mch.weixin.qq.com/pay/unifiedorder",
+                ExcuteTime=23000,
+                ReturnCode="SUCCESS",
+                ResultCode="SUCCESSS",
+                UserIP="172.16.30.78"
+                
+
+            };
+            var reportBack = payHandle.Send(report) as ReportBack;
+            return reportBack;
+        }
+        static ShortURLBack GetShortUrl(string url)
+        {
+            var apps = File.ReadAllLines(@"D:\cert.txt");
+            var payHandle = new PayHandle();
+            var shortUrl = new ShortURL()
+            {
+                AppID = apps[0],
+                MchID = apps[1],
+                Key = apps[3],
+                LongURL=url
+            };
+            var shortUrlBack = payHandle.Send(shortUrl) as ShortURLBack;
+            SavaQR(shortUrlBack.ShortURL);
+            return shortUrlBack;
+        }
+
         #region 生成二维码
         /// <summary>
         /// 生成二维码
@@ -147,6 +236,22 @@ namespace WeiXin_TestConsole
             {
                 throw new WeiXinPayCoreException("生成二维码失败");
             }
+        }
+
+        static void Test()
+        {
+            var uni = new UnifiedOrder
+            {
+                Body = "test",
+                OutTradeNo = DateTime.Now.ToString("yyMMddhhmmss"),
+                ToalFee = 1,
+                SpbillCreateIP = "8.8.8.8",
+                NotifyURL = "http://www.abcd.com",
+                TradeType = "NATIVE",
+                ProductID = "123456"
+            };
+            WXPayMethods method = new WXPayMethods();
+            method.UnifiedOrder(uni);
         }
         #endregion 
 
